@@ -22,7 +22,7 @@ profile:
   #avatar: /avatar.jpg
   # Email address will be used for showing gravatar(https://en.gravatar.com) avatar if `avatar` is not specified.
   email: harryyunull@gmail.com
-  bio: Awesome guy.
+  bio: Student
 
 # Social media
 # Try to sort by changing the order of the keys
@@ -75,7 +75,7 @@ post:
     # Show post link, true by default
     # link: false
     license: Attribution-NonCommercial-NoDerivatives 4.0 International
-    #   (<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" rel=\"external nofollow noopener\" target=\"_blank\">CC BY-NC-ND 4.0</a>)
+       (<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" rel=\"external nofollow noopener\" target=\"_blank\">CC BY-NC-ND 4.0</a>)
     # Show post date, true by default
     # published: false
     # Show post update date, false by default
