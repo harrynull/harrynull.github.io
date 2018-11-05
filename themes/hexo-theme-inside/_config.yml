@@ -89,13 +89,13 @@ page:
   # reward: true
 
 archive:
-  per_page: 10
+  per_page: 50
 
 tag:
-  per_page: 10
+  per_page: 50
 
 category:
-  per_page: 10
+  per_page: 50
 
 seo:
   structured_data: true
