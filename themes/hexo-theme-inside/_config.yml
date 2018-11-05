@@ -97,6 +97,15 @@ tag:
 category:
   per_page: 50
 
+# Disqus comments
+comments:
+  disqus:
+    shortname: harrynull
+    # Or you can set disqus script directly
+    # script: //your_disqus_shortname.disqus.com/embed.js
+    # Default is true, set to false will show a button
+    # autoload: false
+
 seo:
   structured_data: true
 
