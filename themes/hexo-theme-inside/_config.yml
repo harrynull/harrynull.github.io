@@ -1,0 +1,139 @@
+theme:
+  # url prefix of the fetching of json data
+  # api_prefix: api
+  # cdn for theme statics
+  # cdn:
+  # body background
+  # background:
+  # sidebar background
+  # sidebar_background:
+  # maximum width of content
+  # content_width: 640
+# Sidebar menu
+# Mostly for your pages
+menu:
+  Home: /
+  Projects: /projects
+  About: /about
+  # Links: /links
+
+# Profile
+profile:
+  #avatar: /avatar.jpg
+  # Email address will be used for showing gravatar(https://en.gravatar.com) avatar if `avatar` is not specified.
+  email: harryyunull@gmail.com
+  bio: Awesome guy.
+
+# Social media
+# Try to sort by changing the order of the keys
+sns:
+  # `email` will fallback to `profile.email` if not specified
+  email:
+  # `feed` will fallback to `feed.path` of site if not specified
+  feed:
+  github: https://github.com/harrynull
+  twitter:
+  facebook:
+  google+:
+  instagram:
+  tumblr:
+  dribbble:
+  telegram:
+  youtube:
+  hangouts:
+  linkedin:
+  pinterest:
+  soundcloud:
+  myspace:
+  weibo:
+  qq:
+
+footer:
+  # If not defined, will show current year and author, eg: ©2018 • Superman.
+  # copyright:
+
+  # Set to false to hide Hexo link.
+  powered: true
+  # Set to false to hide theme info.
+  theme: true
+
+  # Custom text can be defined here.
+  # custom: Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>
+
+# Post
+post:
+  per_page: 10
+  # Table of content, enabled by default, set to false to disable.
+  toc:
+    # The depth of toc, default is 2, maximum to 4.
+    # depth: 3
+    # Showing index before toc, eg. 1.1 title
+    # index: true
+  # Show reward panel
+  # reward: true
+  # Copyright notice
+  # Disabled by default, remove the hash to enable
+  # You can also use front matter `copyright` to override this setting.
+  copyright:
+    # Global enable, true by default
+    # global: true
+    # Show author, false by default
+    author: true
+    # Show post link, true by default
+    # link: false
+    license: Attribution-NonCommercial-NoDerivatives 4.0 International
+    #   (<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" rel=\"external nofollow noopener\" target=\"_blank\">CC BY-NC-ND 4.0</a>)
+    # Show post date, true by default
+    # published: false
+    # Show post update date, false by default
+    # updated: false
+    # Totally custom copyright
+    # custom: my copyright
+
+# Page
+page:
+  # Show reward panel
+  # reward: true
+
+archive:
+  per_page: 10
+
+tag:
+  per_page: 10
+
+category:
+  per_page: 10
+
+seo:
+  structured_data: true
+
+# Reward
+reward:
+  # Text which shows at the top.
+  # text: Buy me a cup of coffee ☕.
+
+  # Payment Methods
+  #  `qrcode`: url of the qrcode images, optional
+  #  `url`: link of the payment, optional
+  #  `text`: text of the url, url will be displayed as default
+  # You must set either a qrcode or a url
+  # methods:
+  #   - name: wechat
+  #     qrcode:
+  #     url:
+  #     text:
+  #   - name: alipay
+  #     qrcode:
+  #     url:
+  #     text:
+  #   - name: paypal
+  #     qrcode:
+  #     url:
+  #     text:
+  #   - name: bitcoin
+  #     qrcode:
+  #     url:
+  #     text:
+
+# Google analytics
+# ga: UA-00000000-0
