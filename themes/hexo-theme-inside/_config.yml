@@ -27,10 +27,6 @@ profile:
 # Social media
 # Try to sort by changing the order of the keys
 sns:
-  # `email` will fallback to `profile.email` if not specified
-  email:
-  # `feed` will fallback to `feed.path` of site if not specified
-  feed:
   github: https://github.com/harrynull
   twitter:
   facebook:
@@ -40,11 +36,8 @@ sns:
   dribbble:
   telegram:
   youtube:
-  hangouts:
   linkedin:
   pinterest:
-  soundcloud:
-  myspace:
   weibo:
   qq:
 
