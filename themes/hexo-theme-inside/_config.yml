@@ -74,9 +74,9 @@ post:
     author: true
     # Show post link, true by default
     # link: false
-    license: Attribution-NonCommercial-NoDerivatives 4.0 International
-       (<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" rel=\"external nofollow noopener\" target=\"_blank\">CC BY-NC-ND 4.0</a>)
-    # Show post date, true by default
+    license: Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+    #   (<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" rel=\"external nofollow noopener\" target=\"_blank\">CC BY-NC-ND 4.0</a>)
+    # Show post dsate, true by default
     # published: false
     # Show post update date, false by default
     # updated: false
