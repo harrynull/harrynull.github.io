@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Harry Yu | Blog
 subtitle:
 description:
 keywords:
@@ -79,5 +79,5 @@ theme: hexo-theme-inside
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:harrynull/harrynull.github.io.git
+  repo: https://github.com/harrynull/harrynull.github.io.git
   branch: master

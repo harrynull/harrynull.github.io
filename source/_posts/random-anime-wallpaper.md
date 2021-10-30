@@ -79,6 +79,4 @@ def fetch_feed():
 
 从思路到实现都非常简单~
 
-> [Demo](https://harrynull.tech) | 
-[API]( https://harrynull.tech/api/wallpapers/random_anime_wallpaper) | 
-[Source]( https://gist.github.com/harrynull/0194a5c1119a9c1a3020f3a551559262)
+> [Demo](https://harrynull.tech) | [API]( https://harrynull.tech/api/wallpapers/random_anime_wallpaper) | [Source]( https://gist.github.com/harrynull/0194a5c1119a9c1a3020f3a551559262)
