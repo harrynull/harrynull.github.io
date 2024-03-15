@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>CSAPP on Harry Yu&#39;s Blog</title>
+    <link>http://localhost:1313/tags/csapp/</link>
+    <description>Recent content in CSAPP on Harry Yu&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 25 Aug 2017 10:31:22 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/csapp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[CSAPP] Lab2 Phase 5 解谜笔记</title>
+      <link>http://localhost:1313/posts/csapp-lab2-phase-5/</link>
+      <pubDate>Fri, 25 Aug 2017 10:31:22 +0000</pubDate>
+      <guid>http://localhost:1313/posts/csapp-lab2-phase-5/</guid>
+      <description>&lt;p&gt;介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：&lt;a href=&#34;http://csapp.cs.cmu.edu/3e/labs.html&#34;&gt;http://csapp.cs.cmu.edu/3e/labs.html&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;警告：本文含有剧透内容，想要玩Lab2的慎看！&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>[CSAPP] Lab2 Phase 4 解谜笔记</title>
+      <link>http://localhost:1313/posts/csapp-lab2-phase-4/</link>
+      <pubDate>Fri, 25 Aug 2017 10:30:49 +0000</pubDate>
+      <guid>http://localhost:1313/posts/csapp-lab2-phase-4/</guid>
+      <description>&lt;p&gt;介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：&lt;a href=&#34;http://csapp.cs.cmu.edu/3e/labs.html&#34;&gt;http://csapp.cs.cmu.edu/3e/labs.html&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;警告：本文含有剧透内容，想要玩Lab2的慎看！&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>[CSAPP] Lab2 Phase 3 解谜笔记</title>
+      <link>http://localhost:1313/posts/csapp-lab2-phase-3/</link>
+      <pubDate>Fri, 25 Aug 2017 10:29:59 +0000</pubDate>
+      <guid>http://localhost:1313/posts/csapp-lab2-phase-3/</guid>
+      <description>&lt;p&gt;介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：&lt;a href=&#34;http://csapp.cs.cmu.edu/3e/labs.html&#34;&gt;http://csapp.cs.cmu.edu/3e/labs.html&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;警告：本文含有剧透内容，想要玩Lab2的慎看！&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>[CSAPP] Lab2 Phase 1,2 解谜笔记</title>
+      <link>http://localhost:1313/posts/csapp-lab2-phase-12/</link>
+      <pubDate>Fri, 25 Aug 2017 10:25:25 +0000</pubDate>
+      <guid>http://localhost:1313/posts/csapp-lab2-phase-12/</guid>
+      <description>&lt;p&gt;介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：&lt;a href=&#34;http://csapp.cs.cmu.edu/3e/labs.html&#34;&gt;http://csapp.cs.cmu.edu/3e/labs.html&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;警告：本文含有剧透内容，想要玩Lab2的慎看！&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>[CSAPP] Lab2 Phase 5 解谜笔记 | Harry Yu | Blog</title>
+<meta name="keywords" content="CS, CSAPP, 汇编">
+<meta name="description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/__posts/csapp-lab2-phase-5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/__posts/csapp-lab2-phase-5/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu | Blog (Alt + H)">Harry Yu | Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      [CSAPP] Lab2 Phase 5 解谜笔记
+    </h1>
+    <div class="post-meta"><span title='2017-08-25 10:31:22 +0000 UTC'>August 25, 2017</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：<a href="http://csapp.cs.cmu.edu/3e/labs.html">http://csapp.cs.cmu.edu/3e/labs.html</a>。</p>
+<p><strong>警告：本文含有剧透内容，想要玩Lab2的慎看！</strong></p>
+<p>``
+惯例先看代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0000000000401062</span> <span style="color:#960050;background-color:#1e0010">&lt;</span><span style="color:#a6e22e">phase_5</span><span style="color:#960050;background-color:#1e0010">&gt;</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401062:</span>   <span style="color:#a6e22e">push</span>   %rbx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401063:</span>   <span style="color:#a6e22e">sub</span>    <span style="color:#66d9ef">$0x20</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401067:</span>   <span style="color:#a6e22e">mov</span>    %rdi,%rbx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40106</span>a:   <span style="color:#a6e22e">mov</span>    %fs:<span style="color:#ae81ff">0x28</span>,%rax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401073:</span>   <span style="color:#a6e22e">mov</span>    %rax,<span style="color:#ae81ff">0x18</span>(%rsp)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401078:</span>   <span style="color:#a6e22e">xor</span>    %eax,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40107</span>a:   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">40131b</span> &lt;<span style="color:#66d9ef">string_length</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40107</span>f:   <span style="color:#a6e22e">cmp</span>    <span style="color:#66d9ef">$0x6</span>,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401082:</span>   <span style="color:#a6e22e">je</span>     <span style="color:#ae81ff">4010d2</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x70</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401084:</span>   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">40143a</span> &lt;<span style="color:#66d9ef">explode_bomb</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401089:</span>	<span style="color:#a6e22e">jmp</span>    <span style="color:#ae81ff">4010d2</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x70</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40108</span>b:   <span style="color:#a6e22e">movzbl</span> (%rbx,%rax,<span style="color:#ae81ff">1</span>),%ecx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40108</span>f:   <span style="color:#a6e22e">mov</span>    %cl,(%rsp)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401092:</span>   <span style="color:#a6e22e">mov</span>    (%rsp),%rdx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401096:</span>	<span style="color:#a6e22e">and</span>    <span style="color:#66d9ef">$0xf</span>,%edx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401099:</span>   <span style="color:#a6e22e">movzbl</span> <span style="color:#ae81ff">0x4024b0</span>(%rdx),%edx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>a0:   <span style="color:#a6e22e">mov</span>    %dl,<span style="color:#ae81ff">0x10</span>(%rsp,%rax,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>a4:   <span style="color:#a6e22e">add</span>    <span style="color:#66d9ef">$0x1</span>,%rax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>a8:   <span style="color:#a6e22e">cmp</span>    <span style="color:#66d9ef">$0x6</span>,%rax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>ac:   <span style="color:#a6e22e">jne</span>    <span style="color:#ae81ff">40108b</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x29</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>ae:   <span style="color:#a6e22e">movb</span>   <span style="color:#66d9ef">$0x0</span>,<span style="color:#ae81ff">0x16</span>(%rsp)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>b3:   <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x40245e</span>,%esi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>b8:   <span style="color:#a6e22e">lea</span>    <span style="color:#ae81ff">0x10</span>(%rsp),%rdi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>bd:   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">401338</span> &lt;<span style="color:#66d9ef">strings_not_equal</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>c2:   <span style="color:#a6e22e">test</span>   %eax,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>c4:   <span style="color:#a6e22e">je</span>     <span style="color:#ae81ff">4010d9</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x77</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>c6:   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">40143a</span> &lt;<span style="color:#66d9ef">explode_bomb</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>cb:   <span style="color:#a6e22e">nopl</span>   <span style="color:#ae81ff">0x0</span>(%rax,%rax,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>d0:   <span style="color:#a6e22e">jmp</span>    <span style="color:#ae81ff">4010d9</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x77</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>d2:   <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x0</span>,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>d7:   <span style="color:#a6e22e">jmp</span>    <span style="color:#ae81ff">40108b</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x29</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>d9:	<span style="color:#a6e22e">mov</span>    <span style="color:#ae81ff">0x18</span>(%rsp),%rax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>de:	<span style="color:#a6e22e">xor</span>    %fs:<span style="color:#ae81ff">0x28</span>,%rax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>e7:	<span style="color:#a6e22e">je</span>     <span style="color:#ae81ff">4010ee</span> &lt;<span style="color:#66d9ef">phase_5</span>+<span style="color:#ae81ff">0x8c</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>e9:	<span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">400b30</span> &lt;<span style="color:#66d9ef">__stack_chk_fail@plt</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>ee:	<span style="color:#a6e22e">add</span>    <span style="color:#66d9ef">$0x20</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>f2:	<span style="color:#a6e22e">pop</span>    %rbx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">4010</span>f3:	<span style="color:#a6e22e">retq</span>
+</span></span></code></pre></div><p>这段汇编出现了一堆之前没见过的操作，比如开头的<code>mov    %fs:0x28,%rax</code>，经过查询后是用来进行stack-guard check的，详见<a href="https://stackoverflow.com/a/10325915/4358404">这个回答</a>。
+无视掉那些奇怪的操作以后，转换成伪c语言大约是这样：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>rbx<span style="color:#f92672">=</span>rdi; <span style="color:#75715e">//input
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">*</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">18</span>)<span style="color:#f92672">=</span>rax;
+</span></span><span style="display:flex;"><span>eax<span style="color:#f92672">=</span><span style="color:#a6e22e">string_length</span>(rdi);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(eax<span style="color:#f92672">==</span><span style="color:#ae81ff">6</span>)<span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">4010</span>d2;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">explode_bomb</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">4010</span>d2;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">40108</span>b:
+</span></span><span style="display:flex;"><span>ecx<span style="color:#f92672">=*</span>(rbx<span style="color:#f92672">+</span>rax);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span>rsp<span style="color:#f92672">=</span>cl; <span style="color:#75715e">//cx低8bit
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>rdx<span style="color:#f92672">=*</span>rsp;
+</span></span><span style="display:flex;"><span>edx<span style="color:#f92672">=</span>edx <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xf</span>
+</span></span><span style="display:flex;"><span>edx<span style="color:#f92672">=*</span>(<span style="color:#ae81ff">0x4024b0</span><span style="color:#f92672">+</span>rdx);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span>(rsp<span style="color:#f92672">+</span>rax<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>)<span style="color:#f92672">=</span>dl; <span style="color:#75715e">//dx低8bit
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>rax<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(rax<span style="color:#f92672">!=</span><span style="color:#ae81ff">0x6</span>) <span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">40108</span>b;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x16</span>)<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">strings_not_equal</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>,<span style="color:#f92672">*</span><span style="color:#ae81ff">0x40245e</span>)) <span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">4010</span>d9;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">explode_bomb</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">4010</span>d9;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4010</span>d2:
+</span></span><span style="display:flex;"><span>eax<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">40108</span>b;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4010</span>d9:
+</span></span><span style="display:flex;"><span>rax<span style="color:#f92672">=*</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">18</span>)
+</span></span></code></pre></div><p>经过简单的分析和整理，可得：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>rbx<span style="color:#f92672">=</span>rdi; <span style="color:#75715e">//input
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>rax<span style="color:#f92672">=</span><span style="color:#a6e22e">string_length</span>(rdi);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">assert</span>(rax<span style="color:#f92672">==</span><span style="color:#ae81ff">6</span>);
+</span></span><span style="display:flex;"><span>rax<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(rax<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;rax<span style="color:#f92672">!=</span><span style="color:#ae81ff">0x6</span>;rax<span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>rsp<span style="color:#f92672">=</span>rbx[rax];
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>(rsp<span style="color:#f92672">+</span>rax<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>)<span style="color:#f92672">=</span>(<span style="color:#f92672">*</span>(<span style="color:#e6db74">&#34;maduiersnfotvbyl&#34;</span><span style="color:#f92672">+</span>((<span style="color:#f92672">*</span>rsp)<span style="color:#f92672">%</span><span style="color:#ae81ff">16</span>)));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x16</span>)<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">assert</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">strings_not_equal</span>(rsp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>,<span style="color:#e6db74">&#34;flyers&#34;</span>));
+</span></span></code></pre></div><p>所以这段程序其实就是读入一个6个字符的字符串，对每个字符%16，然后映射到&quot;maduiersnfotvbyl&quot;这16个字符中用来构成&quot;flyers&quot;。
+所以只要把9 15 14 5 6 7加16直到变成一个可以输入的字符即可。
+用Python写一个脚本来找：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> [<span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join([chr(c<span style="color:#f92672">+</span>i<span style="color:#f92672">*</span><span style="color:#ae81ff">16</span>) <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> [<span style="color:#ae81ff">9</span>,<span style="color:#ae81ff">15</span>,<span style="color:#ae81ff">14</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>]]) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">10</span>)]
+</span></span><span style="display:flex;"><span>[<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t\x0f\x0e\x05\x06\x07</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x19\x1f\x1e\x15\x16\x17</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#34;)/.%&amp;&#39;&#34;</span>, <span style="color:#e6db74">&#39;9?&gt;567&#39;</span>, <span style="color:#e6db74">&#39;IONEFG&#39;</span>, <span style="color:#e6db74">&#39;Y_^UVW&#39;</span>, <span style="color:#e6db74">&#39;ionefg&#39;</span>, <span style="color:#e6db74">&#39;y</span><span style="color:#ae81ff">\x7f</span><span style="color:#e6db74">~uvw&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x89\x8f\x8e\x85\x86\x87</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x99\x9f</span><span style="color:#e6db74">\x</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">9</span>e\x95\x96\x97<span style="color:#e6db74">&#39;]</span>
+</span></span></code></pre></div><p>随便选一个&quot;IONEFG&quot;输进去过关。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+      <li><a href="http://localhost:1313/tags/csapp/">CSAPP</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B1%87%E7%BC%96/">汇编</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu | Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[CSAPP] Lab2 Phase 3 解谜笔记 | Harry Yu&#39;s Blog</title>
+<meta name="keywords" content="CS, CSAPP, 汇编">
+<meta name="description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！">
+<meta name="author" content="Harry Yu">
+<link rel="canonical" href="http://localhost:1313/posts/csapp-lab2-phase-3/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/csapp-lab2-phase-3/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TLXRWJWNHN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-TLXRWJWNHN', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="[CSAPP] Lab2 Phase 3 解谜笔记" />
+<meta property="og:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/csapp-lab2-phase-3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-08-25T10:29:59+00:00" />
+<meta property="article:modified_time" content="2017-08-25T10:29:59+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[CSAPP] Lab2 Phase 3 解谜笔记"/>
+<meta name="twitter:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[CSAPP] Lab2 Phase 3 解谜笔记",
+      "item": "http://localhost:1313/posts/csapp-lab2-phase-3/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[CSAPP] Lab2 Phase 3 解谜笔记",
+  "name": "[CSAPP] Lab2 Phase 3 解谜笔记",
+  "description": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n",
+  "keywords": [
+    "CS", "CSAPP", "汇编"
+  ],
+  "articleBody": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n首先先看一下phase_3的汇编\n0000000000400f43 \u003cphase_3\u003e: 400f43:\tsub $0x18,%rsp 400f47: lea 0xc(%rsp),%rcx 400f4c: lea 0x8(%rsp),%rdx 400f51: mov $0x4025cf,%esi 400f56:\tmov $0x0,%eax 400f5b: callq 400bf0 \u003c__isoc99_sscanf@plt\u003e 400f60: cmp $0x1,%eax 400f63:\tjg 400f6a \u003cphase_3+0x27\u003e 400f65:\tcallq 40143a \u003cexplode_bomb\u003e 400f6a:\tcmpl $0x7,0x8(%rsp) 400f6f: ja 400fad \u003cphase_3+0x6a\u003e 400f71: mov 0x8(%rsp),%eax 400f75: jmpq *0x402470(,%rax,8) 400f7c: mov $0xcf,%eax 400f81: jmp 400fbe \u003cphase_3+0x7b\u003e 400f83: mov $0x2c3,%eax 400f88: jmp 400fbe \u003cphase_3+0x7b\u003e 400f8a: mov $0x100,%eax 400f8f: jmp 400fbe \u003cphase_3+0x7b\u003e 400f91: mov $0x185,%eax 400f96: jmp 400fbe \u003cphase_3+0x7b\u003e 400f98: mov $0xce,%eax 400f9d: jmp 400fbe \u003cphase_3+0x7b\u003e 400f9f: mov $0x2aa,%eax 400fa4: jmp 400fbe \u003cphase_3+0x7b\u003e 400fa6: mov $0x147,%eax 400fab: jmp 400fbe \u003cphase_3+0x7b\u003e 400fad: callq 40143a \u003cexplode_bomb\u003e 400fb2: mov $0x0,%eax 400fb7: jmp 400fbe \u003cphase_3+0x7b\u003e 400fb9: mov $0x137,%eax 400fbe:\tcmp 0xc(%rsp),%eax 400fc2:\tje 400fc9 \u003cphase_3+0x86\u003e 400fc4:\tcallq 40143a \u003cexplode_bomb\u003e 400fc9:\tadd $0x18,%rsp 400fcd:\tretq 这段汇编首先读入了两个数字N1,N2，存到了栈上，下面是等价的伪c代码： eax=sscanf(rdi,\"%d %d\",rsp+0x8,rsp+0xc) 然后11行这里进行判断，限制N1\u003c=7。 第14行，有趣的事情发生了：jmpq *0x402470(,%rax,8)当时猜了好久什么意思，查了一下发现是间接跳转。 用gdb查一下那个地址有什么值：\n(gdb) x/8ag 0x402470 0x402470: 0x400f7c 0x400fb9 0x402480: 0x400f83 0x400f8a 0x402490: 0x400f91 0x400f98 0x4024a0: 0x400f9f 0x400fa6 果然，这是个跳转表。结合上面的代码可以猜测出来这是个switch。 随便找了一个组合过关。\n",
+  "wordCount" : "160",
+  "inLanguage": "en",
+  "datePublished": "2017-08-25T10:29:59Z",
+  "dateModified": "2017-08-25T10:29:59Z",
+  "author":{
+    "@type": "Person",
+    "name": "Harry Yu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/csapp-lab2-phase-3/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harry Yu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu&#39;s Blog (Alt + H)">Harry Yu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/cn/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [CSAPP] Lab2 Phase 3 解谜笔记
+    </h1>
+    <div class="post-meta"><span title='2017-08-25 10:29:59 +0000 UTC'>August 25, 2017</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Harry Yu
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：<a href="http://csapp.cs.cmu.edu/3e/labs.html">http://csapp.cs.cmu.edu/3e/labs.html</a>。</p>
+<p><strong>警告：本文含有剧透内容，想要玩Lab2的慎看！</strong></p>
+<p>首先先看一下phase_3的汇编</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">0000000000400</span><span class="nf">f43</span> <span class="err">&lt;</span><span class="no">phase_3</span><span class="err">&gt;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f43:</span>	<span class="nf">sub</span>    <span class="no">$0x18</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f47:</span>   <span class="nf">lea</span>    <span class="mi">0xc</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rcx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f4c:</span>   <span class="nf">lea</span>    <span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rdx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f51:</span>   <span class="nf">mov</span>    <span class="no">$0x4025cf</span><span class="p">,</span><span class="nv">%esi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f56:</span>	<span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f5b:</span>   <span class="nf">callq</span>  <span class="mh">400bf0</span> <span class="p">&lt;</span><span class="no">__isoc99_sscanf@plt</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f60:</span>   <span class="nf">cmp</span>    <span class="no">$0x1</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f63:</span>	<span class="nf">jg</span>     <span class="mh">400f6a</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x27</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f65:</span>	<span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f6a:</span>	<span class="nf">cmpl</span>   <span class="no">$0x7</span><span class="p">,</span><span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f6f:</span>   <span class="nf">ja</span>     <span class="mh">400fad</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x6a</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f71:</span>   <span class="nf">mov</span>    <span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f75:</span>   <span class="nf">jmpq</span>   <span class="p">*</span><span class="mi">0x402470</span><span class="p">(,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f7c:</span>   <span class="nf">mov</span>    <span class="no">$0xcf</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f81:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f83:</span>   <span class="nf">mov</span>    <span class="no">$0x2c3</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f88:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f8a:</span>   <span class="nf">mov</span>    <span class="no">$0x100</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f8f:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f91:</span>   <span class="nf">mov</span>    <span class="no">$0x185</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f96:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f98:</span>   <span class="nf">mov</span>    <span class="no">$0xce</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f9d:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">f9f:</span>   <span class="nf">mov</span>    <span class="no">$0x2aa</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fa4:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fa6:</span>   <span class="nf">mov</span>    <span class="no">$0x147</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fab:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fad:</span>   <span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fb2:</span>   <span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fb7:</span>   <span class="nf">jmp</span>    <span class="mh">400fbe</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x7b</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fb9:</span>   <span class="nf">mov</span>    <span class="no">$0x137</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fbe:</span>	<span class="nf">cmp</span>    <span class="mi">0xc</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fc2:</span>	<span class="nf">je</span>     <span class="mh">400fc9</span> <span class="p">&lt;</span><span class="no">phase_3</span><span class="p">+</span><span class="mi">0x86</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fc4:</span>	<span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fc9:</span>	<span class="nf">add</span>    <span class="no">$0x18</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fcd:</span>	<span class="nf">retq</span>   
+</span></span></code></pre></div><p>这段汇编首先读入了两个数字N1,N2，存到了栈上，下面是等价的伪c代码：
+<code>eax=sscanf(rdi,&quot;%d %d&quot;,rsp+0x8,rsp+0xc)</code>
+然后11行这里进行判断，限制N1&lt;=7。
+第14行，有趣的事情发生了：<code>jmpq   *0x402470(,%rax,8)</code>当时猜了好久什么意思，查了一下发现是间接跳转。
+用gdb查一下那个地址有什么值：</p>
+<pre tabindex="0"><code>(gdb) x/8ag 0x402470
+0x402470:       0x400f7c &lt;phase_3+57&gt;   0x400fb9 &lt;phase_3+118&gt;
+0x402480:       0x400f83 &lt;phase_3+64&gt;   0x400f8a &lt;phase_3+71&gt;
+0x402490:       0x400f91 &lt;phase_3+78&gt;   0x400f98 &lt;phase_3+85&gt;
+0x4024a0:       0x400f9f &lt;phase_3+92&gt;   0x400fa6 &lt;phase_3+99&gt;
+</code></pre><p>果然，这是个跳转表。结合上面的代码可以猜测出来这是个switch。
+随便找了一个组合过关。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+      <li><a href="http://localhost:1313/tags/csapp/">CSAPP</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B1%87%E7%BC%96/">汇编</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/csapp-lab2-phase-4/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>[CSAPP] Lab2 Phase 4 解谜笔记</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/csapp-lab2-phase-12/">
+    <span class="title">Next »</span>
+    <br>
+    <span>[CSAPP] Lab2 Phase 1,2 解谜笔记</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

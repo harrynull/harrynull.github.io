@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[CSAPP] Lab2 Phase 5 解谜笔记 | Harry Yu&#39;s Blog</title>
+<meta name="keywords" content="CS, CSAPP, 汇编">
+<meta name="description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！">
+<meta name="author" content="Harry Yu">
+<link rel="canonical" href="http://localhost:1313/posts/csapp-lab2-phase-5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/csapp-lab2-phase-5/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TLXRWJWNHN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-TLXRWJWNHN', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="[CSAPP] Lab2 Phase 5 解谜笔记" />
+<meta property="og:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/csapp-lab2-phase-5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-08-25T10:31:22+00:00" />
+<meta property="article:modified_time" content="2017-08-25T10:31:22+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[CSAPP] Lab2 Phase 5 解谜笔记"/>
+<meta name="twitter:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[CSAPP] Lab2 Phase 5 解谜笔记",
+      "item": "http://localhost:1313/posts/csapp-lab2-phase-5/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[CSAPP] Lab2 Phase 5 解谜笔记",
+  "name": "[CSAPP] Lab2 Phase 5 解谜笔记",
+  "description": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n",
+  "keywords": [
+    "CS", "CSAPP", "汇编"
+  ],
+  "articleBody": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n`` 惯例先看代码：\n0000000000401062 \u003cphase_5\u003e: 401062: push %rbx 401063: sub $0x20,%rsp 401067: mov %rdi,%rbx 40106a: mov %fs:0x28,%rax 401073: mov %rax,0x18(%rsp) 401078: xor %eax,%eax 40107a: callq 40131b \u003cstring_length\u003e 40107f: cmp $0x6,%eax 401082: je 4010d2 \u003cphase_5+0x70\u003e 401084: callq 40143a \u003cexplode_bomb\u003e 401089:\tjmp 4010d2 \u003cphase_5+0x70\u003e 40108b: movzbl (%rbx,%rax,1),%ecx 40108f: mov %cl,(%rsp) 401092: mov (%rsp),%rdx 401096:\tand $0xf,%edx 401099: movzbl 0x4024b0(%rdx),%edx 4010a0: mov %dl,0x10(%rsp,%rax,1) 4010a4: add $0x1,%rax 4010a8: cmp $0x6,%rax 4010ac: jne 40108b \u003cphase_5+0x29\u003e 4010ae: movb $0x0,0x16(%rsp) 4010b3: mov $0x40245e,%esi 4010b8: lea 0x10(%rsp),%rdi 4010bd: callq 401338 \u003cstrings_not_equal\u003e 4010c2: test %eax,%eax 4010c4: je 4010d9 \u003cphase_5+0x77\u003e 4010c6: callq 40143a \u003cexplode_bomb\u003e 4010cb: nopl 0x0(%rax,%rax,1) 4010d0: jmp 4010d9 \u003cphase_5+0x77\u003e 4010d2: mov $0x0,%eax 4010d7: jmp 40108b \u003cphase_5+0x29\u003e 4010d9:\tmov 0x18(%rsp),%rax 4010de:\txor %fs:0x28,%rax 4010e7:\tje 4010ee \u003cphase_5+0x8c\u003e 4010e9:\tcallq 400b30 \u003c__stack_chk_fail@plt\u003e 4010ee:\tadd $0x20,%rsp 4010f2:\tpop %rbx 4010f3:\tretq 这段汇编出现了一堆之前没见过的操作，比如开头的mov %fs:0x28,%rax，经过查询后是用来进行stack-guard check的，详见这个回答。 无视掉那些奇怪的操作以后，转换成伪c语言大约是这样：\nrbx=rdi; //input *(rsp+18)=rax; eax=string_length(rdi); if(eax==6)goto 4010d2; explode_bomb(); goto 4010d2; 40108b: ecx=*(rbx+rax); *rsp=cl; //cx低8bit rdx=*rsp; edx=edx \u0026 0xf edx=*(0x4024b0+rdx); *(rsp+rax+0x10)=dl; //dx低8bit rax++; if(rax!=0x6) goto 40108b; *(rsp+0x16)=0; if(!strings_not_equal(rsp+0x10,*0x40245e)) goto 4010d9; explode_bomb(); goto 4010d9; 4010d2: eax=0; goto 40108b; 4010d9: rax=*(rsp+18) 经过简单的分析和整理，可得：\nrbx=rdi; //input rax=string_length(rdi); assert(rax==6); rax=0; for(rax=0;rax!=0x6;rax++){ *rsp=rbx[rax]; *(rsp+rax+0x10)=(*(\"maduiersnfotvbyl\"+((*rsp)%16))); } *(rsp+0x16)=0; assert(!strings_not_equal(rsp+0x10,\"flyers\")); 所以这段程序其实就是读入一个6个字符的字符串，对每个字符%16，然后映射到\"maduiersnfotvbyl\"这16个字符中用来构成\"flyers\"。 所以只要把9 15 14 5 6 7加16直到变成一个可以输入的字符即可。 用Python写一个脚本来找：\n\u003e\u003e\u003e [\"\".join([chr(c+i*16) for c in [9,15,14,5,6,7]]) for i in range(0,10)] ['\\t\\x0f\\x0e\\x05\\x06\\x07', '\\x19\\x1f\\x1e\\x15\\x16\\x17', \")/.%\u0026'\", '9?\u003e567', 'IONEFG', 'Y_^UVW', 'ionefg', 'y\\x7f~uvw', '\\x89\\x8f\\x8e\\x85\\x86\\x87', '\\x99\\x9f\\x 9e\\x95\\x96\\x97'] 随便选一个\"IONEFG\"输进去过关。\n",
+  "wordCount" : "215",
+  "inLanguage": "en",
+  "datePublished": "2017-08-25T10:31:22Z",
+  "dateModified": "2017-08-25T10:31:22Z",
+  "author":{
+    "@type": "Person",
+    "name": "Harry Yu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/csapp-lab2-phase-5/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harry Yu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu&#39;s Blog (Alt + H)">Harry Yu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/cn/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [CSAPP] Lab2 Phase 5 解谜笔记
+    </h1>
+    <div class="post-meta"><span title='2017-08-25 10:31:22 +0000 UTC'>August 25, 2017</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Harry Yu
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：<a href="http://csapp.cs.cmu.edu/3e/labs.html">http://csapp.cs.cmu.edu/3e/labs.html</a>。</p>
+<p><strong>警告：本文含有剧透内容，想要玩Lab2的慎看！</strong></p>
+<p>``
+惯例先看代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">0000000000401062</span> <span class="err">&lt;</span><span class="nf">phase_5</span><span class="err">&gt;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401062:</span>   <span class="nf">push</span>   <span class="nv">%rbx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401063:</span>   <span class="nf">sub</span>    <span class="no">$0x20</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401067:</span>   <span class="nf">mov</span>    <span class="nv">%rdi</span><span class="p">,</span><span class="nv">%rbx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40106</span><span class="nl">a:</span>   <span class="nf">mov</span>    <span class="nv">%fs</span><span class="p">:</span><span class="mi">0x28</span><span class="p">,</span><span class="nv">%rax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401073:</span>   <span class="nf">mov</span>    <span class="nv">%rax</span><span class="p">,</span><span class="mi">0x18</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401078:</span>   <span class="nf">xor</span>    <span class="nv">%eax</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40107</span><span class="nl">a:</span>   <span class="nf">callq</span>  <span class="mh">40131b</span> <span class="p">&lt;</span><span class="no">string_length</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40107</span><span class="nl">f:</span>   <span class="nf">cmp</span>    <span class="no">$0x6</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401082:</span>   <span class="nf">je</span>     <span class="mh">4010d2</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x70</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401084:</span>   <span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401089:</span>	<span class="nf">jmp</span>    <span class="mh">4010d2</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x70</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40108</span><span class="nl">b:</span>   <span class="nf">movzbl</span> <span class="p">(</span><span class="nv">%rbx</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nv">%ecx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40108</span><span class="nl">f:</span>   <span class="nf">mov</span>    <span class="nv">%cl</span><span class="p">,(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401092:</span>   <span class="nf">mov</span>    <span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rdx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401096:</span>	<span class="nf">and</span>    <span class="no">$0xf</span><span class="p">,</span><span class="nv">%edx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401099:</span>   <span class="nf">movzbl</span> <span class="mi">0x4024b0</span><span class="p">(</span><span class="nv">%rdx</span><span class="p">),</span><span class="nv">%edx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">a0:</span>   <span class="nf">mov</span>    <span class="nv">%dl</span><span class="p">,</span><span class="mi">0x10</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">a4:</span>   <span class="nf">add</span>    <span class="no">$0x1</span><span class="p">,</span><span class="nv">%rax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">a8:</span>   <span class="nf">cmp</span>    <span class="no">$0x6</span><span class="p">,</span><span class="nv">%rax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">ac:</span>   <span class="nf">jne</span>    <span class="mh">40108b</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x29</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">ae:</span>   <span class="nf">movb</span>   <span class="no">$0x0</span><span class="p">,</span><span class="mi">0x16</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">b3:</span>   <span class="nf">mov</span>    <span class="no">$0x40245e</span><span class="p">,</span><span class="nv">%esi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">b8:</span>   <span class="nf">lea</span>    <span class="mi">0x10</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rdi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">bd:</span>   <span class="nf">callq</span>  <span class="mh">401338</span> <span class="p">&lt;</span><span class="no">strings_not_equal</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">c2:</span>   <span class="nf">test</span>   <span class="nv">%eax</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">c4:</span>   <span class="nf">je</span>     <span class="mh">4010d9</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x77</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">c6:</span>   <span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">cb:</span>   <span class="nf">nopl</span>   <span class="mi">0x0</span><span class="p">(</span><span class="nv">%rax</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">d0:</span>   <span class="nf">jmp</span>    <span class="mh">4010d9</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x77</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">d2:</span>   <span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">d7:</span>   <span class="nf">jmp</span>    <span class="mh">40108b</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x29</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">d9:</span>	<span class="nf">mov</span>    <span class="mi">0x18</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">de:</span>	<span class="nf">xor</span>    <span class="nv">%fs</span><span class="p">:</span><span class="mi">0x28</span><span class="p">,</span><span class="nv">%rax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">e7:</span>	<span class="nf">je</span>     <span class="mh">4010ee</span> <span class="p">&lt;</span><span class="no">phase_5</span><span class="p">+</span><span class="mi">0x8c</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">e9:</span>	<span class="nf">callq</span>  <span class="mh">400b30</span> <span class="p">&lt;</span><span class="no">__stack_chk_fail@plt</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">ee:</span>	<span class="nf">add</span>    <span class="no">$0x20</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">f2:</span>	<span class="nf">pop</span>    <span class="nv">%rbx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">4010</span><span class="nl">f3:</span>	<span class="nf">retq</span>
+</span></span></code></pre></div><p>这段汇编出现了一堆之前没见过的操作，比如开头的<code>mov    %fs:0x28,%rax</code>，经过查询后是用来进行stack-guard check的，详见<a href="https://stackoverflow.com/a/10325915/4358404">这个回答</a>。
+无视掉那些奇怪的操作以后，转换成伪c语言大约是这样：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">rbx</span><span class="o">=</span><span class="n">rdi</span><span class="p">;</span> <span class="c1">//input
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mi">18</span><span class="p">)</span><span class="o">=</span><span class="n">rax</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eax</span><span class="o">=</span><span class="nf">string_length</span><span class="p">(</span><span class="n">rdi</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">eax</span><span class="o">==</span><span class="mi">6</span><span class="p">)</span><span class="k">goto</span> <span class="mi">4010</span><span class="n">d2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">explode_bomb</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">goto</span> <span class="mi">4010</span><span class="n">d2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">40108</span><span class="nl">b</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">ecx</span><span class="o">=*</span><span class="p">(</span><span class="n">rbx</span><span class="o">+</span><span class="n">rax</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">rsp</span><span class="o">=</span><span class="n">cl</span><span class="p">;</span> <span class="c1">//cx低8bit
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">rdx</span><span class="o">=*</span><span class="n">rsp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">edx</span><span class="o">=</span><span class="n">edx</span> <span class="o">&amp;</span> <span class="mh">0xf</span>
+</span></span><span class="line"><span class="cl"><span class="n">edx</span><span class="o">=*</span><span class="p">(</span><span class="mh">0x4024b0</span><span class="o">+</span><span class="n">rdx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="n">rax</span><span class="o">+</span><span class="mh">0x10</span><span class="p">)</span><span class="o">=</span><span class="n">dl</span><span class="p">;</span> <span class="c1">//dx低8bit
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">rax</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">rax</span><span class="o">!=</span><span class="mh">0x6</span><span class="p">)</span> <span class="k">goto</span> <span class="mi">40108</span><span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mh">0x16</span><span class="p">)</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nf">strings_not_equal</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mh">0x10</span><span class="p">,</span><span class="o">*</span><span class="mh">0x40245e</span><span class="p">))</span> <span class="k">goto</span> <span class="mi">4010</span><span class="n">d9</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">explode_bomb</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">goto</span> <span class="mi">4010</span><span class="n">d9</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">4010</span><span class="nl">d2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">eax</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">goto</span> <span class="mi">40108</span><span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">4010</span><span class="nl">d9</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">rax</span><span class="o">=*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mi">18</span><span class="p">)</span>
+</span></span></code></pre></div><p>经过简单的分析和整理，可得：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">rbx</span><span class="o">=</span><span class="n">rdi</span><span class="p">;</span> <span class="c1">//input
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">rax</span><span class="o">=</span><span class="nf">string_length</span><span class="p">(</span><span class="n">rdi</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">assert</span><span class="p">(</span><span class="n">rax</span><span class="o">==</span><span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">rax</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span><span class="p">(</span><span class="n">rax</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">rax</span><span class="o">!=</span><span class="mh">0x6</span><span class="p">;</span><span class="n">rax</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">rsp</span><span class="o">=</span><span class="n">rbx</span><span class="p">[</span><span class="n">rax</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="n">rax</span><span class="o">+</span><span class="mh">0x10</span><span class="p">)</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="s">&#34;maduiersnfotvbyl&#34;</span><span class="o">+</span><span class="p">((</span><span class="o">*</span><span class="n">rsp</span><span class="p">)</span><span class="o">%</span><span class="mi">16</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mh">0x16</span><span class="p">)</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">assert</span><span class="p">(</span><span class="o">!</span><span class="nf">strings_not_equal</span><span class="p">(</span><span class="n">rsp</span><span class="o">+</span><span class="mh">0x10</span><span class="p">,</span><span class="s">&#34;flyers&#34;</span><span class="p">));</span>
+</span></span></code></pre></div><p>所以这段程序其实就是读入一个6个字符的字符串，对每个字符%16，然后映射到&quot;maduiersnfotvbyl&quot;这16个字符中用来构成&quot;flyers&quot;。
+所以只要把9 15 14 5 6 7加16直到变成一个可以输入的字符即可。
+用Python写一个脚本来找：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="n">i</span><span class="o">*</span><span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="s1">&#39;</span><span class="se">\t\x0f\x0e\x05\x06\x07</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\x19\x1f\x1e\x15\x16\x17</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&#34;)/.%&amp;&#39;&#34;</span><span class="p">,</span> <span class="s1">&#39;9?&gt;567&#39;</span><span class="p">,</span> <span class="s1">&#39;IONEFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Y_^UVW&#39;</span><span class="p">,</span> <span class="s1">&#39;ionefg&#39;</span><span class="p">,</span> <span class="s1">&#39;y</span><span class="se">\x7f</span><span class="s1">~uvw&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\x89\x8f\x8e\x85\x86\x87</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\x99\x9f</span><span class="s1">\x</span>
+</span></span><span class="line"><span class="cl"><span class="mi">9</span><span class="n">e</span>\<span class="n">x95</span>\<span class="n">x96</span>\<span class="n">x97</span><span class="s1">&#39;]</span>
+</span></span></code></pre></div><p>随便选一个&quot;IONEFG&quot;输进去过关。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+      <li><a href="http://localhost:1313/tags/csapp/">CSAPP</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B1%87%E7%BC%96/">汇编</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/28.html">
+    <span class="title">« Prev</span>
+    <br>
+    <span>test %eax %eax 是什么</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/csapp-lab2-phase-4/">
+    <span class="title">Next »</span>
+    <br>
+    <span>[CSAPP] Lab2 Phase 4 解谜笔记</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

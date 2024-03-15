@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Docker on Harry Yu&#39;s Blog</title>
+    <link>http://localhost:1313/tags/docker/</link>
+    <description>Recent content in Docker on Harry Yu&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 02 Jul 2018 23:16:02 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统</title>
+      <link>http://localhost:1313/posts/server-monitor/</link>
+      <pubDate>Mon, 02 Jul 2018 23:16:02 +0000</pubDate>
+      <guid>http://localhost:1313/posts/server-monitor/</guid>
+      <description>&lt;p&gt;在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。&lt;/p&gt;
+&lt;p&gt;选定的方案：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Grafana 用于可视化数据&lt;/li&gt;
+&lt;li&gt;Graphite 用于汇总数据&lt;/li&gt;
+&lt;li&gt;collectd 用来收集系统/apache数据&lt;/li&gt;
+&lt;li&gt;statsd 用来收集自定义服务数据&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;数据结构图： statsd, collectd -&amp;gt; graphite -&amp;gt; grafana&lt;/p&gt;
+&lt;p&gt;以上框架均使用docker部署（如果可用的话）&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统 | Harry Yu&#39;s Blog</title>
+<meta name="keywords" content="docker, grafana">
+<meta name="description" content="在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。
+选定的方案：
+
+Grafana 用于可视化数据
+Graphite 用于汇总数据
+collectd 用来收集系统/apache数据
+statsd 用来收集自定义服务数据
+
+数据结构图： statsd, collectd -&gt; graphite -&gt; grafana
+以上框架均使用docker部署（如果可用的话）">
+<meta name="author" content="Harry Yu">
+<link rel="canonical" href="http://localhost:1313/posts/server-monitor/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/server-monitor/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TLXRWJWNHN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-TLXRWJWNHN', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统" />
+<meta property="og:description" content="在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。
+选定的方案：
+
+Grafana 用于可视化数据
+Graphite 用于汇总数据
+collectd 用来收集系统/apache数据
+statsd 用来收集自定义服务数据
+
+数据结构图： statsd, collectd -&gt; graphite -&gt; grafana
+以上框架均使用docker部署（如果可用的话）" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/server-monitor/" />
+<meta property="og:image" content="https://i.loli.net/2018/07/02/5b3a2e0c1bdb9.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-02T23:16:02+00:00" />
+<meta property="article:modified_time" content="2018-07-02T23:16:02+00:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://i.loli.net/2018/07/02/5b3a2e0c1bdb9.jpg" />
+<meta name="twitter:title" content="部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统"/>
+<meta name="twitter:description" content="在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。
+选定的方案：
+
+Grafana 用于可视化数据
+Graphite 用于汇总数据
+collectd 用来收集系统/apache数据
+statsd 用来收集自定义服务数据
+
+数据结构图： statsd, collectd -&gt; graphite -&gt; grafana
+以上框架均使用docker部署（如果可用的话）"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "部署基于 Grafana + Graphite + collectd + statsd 的服务监控系统",
+      "item": "http://localhost:1313/posts/server-monitor/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "部署基于 Grafana + Graphite + collectd + statsd 的服务监控系统",
+  "name": "部署基于 Grafana \u002b Graphite \u002b collectd \u002b statsd 的服务监控系统",
+  "description": "在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。\n选定的方案：\nGrafana 用于可视化数据 Graphite 用于汇总数据 collectd 用来收集系统/apache数据 statsd 用来收集自定义服务数据 数据结构图： statsd, collectd -\u0026gt; graphite -\u0026gt; grafana\n以上框架均使用docker部署（如果可用的话）\n",
+  "keywords": [
+    "docker", "grafana"
+  ],
+  "articleBody": "在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。\n选定的方案：\nGrafana 用于可视化数据 Graphite 用于汇总数据 collectd 用来收集系统/apache数据 statsd 用来收集自定义服务数据 数据结构图： statsd, collectd -\u003e graphite -\u003e grafana\n以上框架均使用docker部署（如果可用的话）\n1. 部署 graphite 用来汇总数据 graphite 还是很好配置的，直接使用现成的 docker 镜像即可，里面还自带了 statsd：graphite-project/docker-graphite-statsd。\n比较坑的地方是给 graphite 的 dashboard 添加密码，官方的那个镜像好像默认是不支持密码保护的。除了换用 sitespeedio/docker-graphite-statsd 的 fork 就只能手动给 nginx 添加密码了，最好的方法当然是自己 fork 一个改一下，偷懒的方法如下：\ndocker exec -it graphite bash 进入 container 的 bash\nvim /etc/nginx/.htpasswd 添加用户名和密码（可以用在线生成器或者htpasswd工具生成）。\nvim /etc/nginx/sites-enabled/graphite-statsd.conf 在 location / 块中添加以下两行\nauth_basic “Auth needed”; auth_basic_user_file /etc/nginx/.htpasswd;\nnginx -s reload 使修改生效\n最后别忘了修改网页控制台的root密码\nUpdate the default Django admin user account. The default is insecure. username: root password: root email: root.graphite@mailinator.com First login at: http://localhost/account/login Then update the root user’s \u003e profile at: http://localhost/admin/auth/user/1/\n2. 部署 Grafana 用于可视化数据 送分题，看官方 docker 教程即可。 例子：\ndocker run \\ -d \\ -p 3000:3000 \\ --name=grafana \\ -e \"GF_INSTALL_PLUGINS=grafana-piechart-panel\" \\ grafana/grafana 3. collectd 用来收集系统/apache数据 collectd 可以在 host 和 container 里安装 先预先改好 collectd.conf 文件，要改的地方主要是Hostname，LoadPlugin write_graphite, write_graphite 块的配置。我在这里还额外开启了 apache 插件来监测 apache 数据（修改LoadPlugin apache和 apache 块的配置）。\n然后在 Dockerfile 里添加：\nRUN apt-get install -q -y collectd ARG HOSTNAME_PLACEHOLDER ARG GRAPHITE_HOST COPY conf/collectd.conf /etc/collectd/collectd.conf RUN sed -i \"s/HOSTNAME_PLACEHOLDER/${NAME}/g\" /etc/collectd/collectd.conf RUN sed -i \"s/GRAPHITE_HOST_PLACEHOLDER/${GRAPHITE_HOST}/g\" /etc/collectd/collectd.conf 比较坑的一点是 collectd 服务默认是不启动的，所以要手动指定一下：\nCMD service collectd start \u0026\u0026 apache2-foreground 此外，如果选择监测 apache 的话，还需要额外对 apache 进行配置 （只允许localhost访问）：\nRUN echo \"ExtendedStatus on\" \u003e\u003e /etc/apache2/apache2.conf \u0026\u0026\\ echo \"\" \u003e\u003e /etc/apache2/apache2.conf \u0026\u0026\\ echo \" SetHandler server-status\" \u003e\u003e /etc/apache2/apache2.conf \u0026\u0026\\ echo \" Deny from all\" \u003e\u003e /etc/apache2/apache2.conf \u0026\u0026\\ echo \" Allow from localhost ip6-localhost\" \u003e\u003e /etc/apache2/apache2.conf \u0026\u0026\\ echo \"\" \u003e\u003e /etc/apache2/apache2.conf 4. 部署 statsd 用来收集自定义服务数据 实际上 statsd 已经在部署 graphite 的时候一起部署过了，这里做的实际上是配置服务来提交数据。\n由于我的服务是 php 写的，所以我是直接选用的 domnikl/statsd-php 框架来进行整合。\n5. 搭建 Dashboard 终于到最后一步辣。打开之前部署的 Grafana 控制台然后根据自己的需求添加数据源和图表，打造炫酷的 Dashboard（尽管用户看不到）。\n别忘了修改 Grafana 的密码哦。\n最终成品图：\n",
+  "wordCount" : "256",
+  "inLanguage": "en",
+  "image":"https://i.loli.net/2018/07/02/5b3a2e0c1bdb9.jpg","datePublished": "2018-07-02T23:16:02Z",
+  "dateModified": "2018-07-02T23:16:02Z",
+  "author":{
+    "@type": "Person",
+    "name": "Harry Yu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/server-monitor/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harry Yu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu&#39;s Blog (Alt + H)">Harry Yu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/cn/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统
+    </h1>
+    <div class="post-meta"><span title='2018-07-02 23:16:02 +0000 UTC'>July 2, 2018</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Harry Yu
+
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="eager" src="https://i.loli.net/2018/07/02/5b3a2e0c1bdb9.jpg" alt="">
+        
+</figure><div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-%e9%83%a8%e7%bd%b2-graphite-%e7%94%a8%e6%9d%a5%e6%b1%87%e6%80%bb%e6%95%b0%e6%8d%ae" aria-label="1. 部署 graphite 用来汇总数据">1. 部署 graphite 用来汇总数据</a></li>
+                <li>
+                    <a href="#2-%e9%83%a8%e7%bd%b2-grafana-%e7%94%a8%e4%ba%8e%e5%8f%af%e8%a7%86%e5%8c%96%e6%95%b0%e6%8d%ae" aria-label="2. 部署 Grafana 用于可视化数据">2. 部署 Grafana 用于可视化数据</a></li>
+                <li>
+                    <a href="#3-collectd-%e7%94%a8%e6%9d%a5%e6%94%b6%e9%9b%86%e7%b3%bb%e7%bb%9fapache%e6%95%b0%e6%8d%ae" aria-label="3. collectd 用来收集系统/apache数据">3. collectd 用来收集系统/apache数据</a></li>
+                <li>
+                    <a href="#4-%e9%83%a8%e7%bd%b2-statsd-%e7%94%a8%e6%9d%a5%e6%94%b6%e9%9b%86%e8%87%aa%e5%ae%9a%e4%b9%89%e6%9c%8d%e5%8a%a1%e6%95%b0%e6%8d%ae" aria-label="4. 部署 statsd 用来收集自定义服务数据">4. 部署 statsd 用来收集自定义服务数据</a></li>
+                <li>
+                    <a href="#5-%e6%90%ad%e5%bb%ba-dashboard" aria-label="5. 搭建 Dashboard">5. 搭建 Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>在靠写 txt 和 uptime bot 来记录统计数据和监测服务可用性一年后，终于趁着这次 docker 化服务的时候下定决心用一套像样的监控系统。</p>
+<p>选定的方案：</p>
+<ol>
+<li>Grafana 用于可视化数据</li>
+<li>Graphite 用于汇总数据</li>
+<li>collectd 用来收集系统/apache数据</li>
+<li>statsd 用来收集自定义服务数据</li>
+</ol>
+<p>数据结构图： statsd, collectd -&gt; graphite -&gt; grafana</p>
+<p>以上框架均使用docker部署（如果可用的话）</p>
+<h2 id="1-部署-graphite-用来汇总数据">1. 部署 graphite 用来汇总数据<a hidden class="anchor" aria-hidden="true" href="#1-部署-graphite-用来汇总数据">#</a></h2>
+<p>graphite 还是很好配置的，直接使用现成的 docker 镜像即可，里面还自带了 statsd：<a href="https://github.com/graphite-project/docker-graphite-statsd">graphite-project/docker-graphite-statsd</a>。</p>
+<p>比较坑的地方是给 graphite 的 dashboard 添加密码，官方的那个镜像好像默认是不支持密码保护的。除了换用 <a href="https://github.com/sitespeedio/docker-graphite-statsd">sitespeedio/docker-graphite-statsd</a> 的 fork 就只能手动给 nginx 添加密码了，最好的方法当然是自己 fork 一个改一下，偷懒的方法如下：</p>
+<ol>
+<li>
+<p><code>docker exec -it graphite bash</code> 进入 container 的 bash</p>
+</li>
+<li>
+<p><code>vim /etc/nginx/.htpasswd</code> 添加用户名和密码（可以用在线生成器或者htpasswd工具生成）。</p>
+</li>
+<li>
+<p><code>vim /etc/nginx/sites-enabled/graphite-statsd.conf</code> 在 <code>location /</code> 块中添加以下两行</p>
+<p>auth_basic           &ldquo;Auth needed&rdquo;;
+auth_basic_user_file /etc/nginx/.htpasswd;</p>
+</li>
+<li>
+<p><code>nginx -s reload</code> 使修改生效</p>
+</li>
+<li>
+<p>最后别忘了修改网页控制台的root密码</p>
+</li>
+</ol>
+<blockquote>
+<p>Update the default Django admin user account. The default is insecure.
+username: root
+password: root
+email: <a href="mailto:root.graphite@mailinator.com">root.graphite@mailinator.com</a>
+First login at: http://localhost/account/login Then update the root user&rsquo;s &gt; profile at: http://localhost/admin/auth/user/1/</p>
+</blockquote>
+<h2 id="2-部署-grafana-用于可视化数据">2. 部署 Grafana 用于可视化数据<a hidden class="anchor" aria-hidden="true" href="#2-部署-grafana-用于可视化数据">#</a></h2>
+<p>送分题，看<a href="http://docs.grafana.org/installation/docker/">官方 docker 教程</a>即可。
+例子：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 3000:3000 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name<span class="o">=</span>grafana <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="s2">&#34;GF_INSTALL_PLUGINS=grafana-piechart-panel&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  grafana/grafana
+</span></span></code></pre></div><h2 id="3-collectd-用来收集系统apache数据">3. collectd 用来收集系统/apache数据<a hidden class="anchor" aria-hidden="true" href="#3-collectd-用来收集系统apache数据">#</a></h2>
+<p>collectd 可以在 host 和 container 里安装
+先预先改好 collectd.conf 文件，要改的地方主要是Hostname，<code>LoadPlugin write_graphite</code>, write_graphite 块的配置。我在这里还额外开启了 apache 插件来监测 apache 数据（修改<code>LoadPlugin apache</code>和 apache 块的配置）。</p>
+<p>然后在 Dockerfile 里添加：</p>
+<pre><code>RUN apt-get install -q -y collectd
+ARG HOSTNAME_PLACEHOLDER
+ARG GRAPHITE_HOST
+COPY conf/collectd.conf /etc/collectd/collectd.conf
+RUN sed -i &quot;s/HOSTNAME_PLACEHOLDER/${NAME}/g&quot; /etc/collectd/collectd.conf
+RUN sed -i &quot;s/GRAPHITE_HOST_PLACEHOLDER/${GRAPHITE_HOST}/g&quot; /etc/collectd/collectd.conf
+</code></pre>
+<p>比较坑的一点是 collectd 服务默认是不启动的，所以要手动指定一下：</p>
+<pre><code>CMD service collectd start &amp;&amp; apache2-foreground
+</code></pre>
+<p>此外，如果选择监测 apache 的话，还需要额外对 apache 进行配置 （只允许localhost访问）：</p>
+<pre><code>RUN echo &quot;ExtendedStatus on&quot; &gt;&gt; /etc/apache2/apache2.conf &amp;&amp;\
+    echo &quot;&lt;Location /mod_status&gt;&quot; &gt;&gt; /etc/apache2/apache2.conf &amp;&amp;\
+    echo &quot;  SetHandler server-status&quot; &gt;&gt; /etc/apache2/apache2.conf &amp;&amp;\
+    echo &quot;  Deny from all&quot; &gt;&gt; /etc/apache2/apache2.conf &amp;&amp;\
+    echo &quot;  Allow from localhost ip6-localhost&quot; &gt;&gt; /etc/apache2/apache2.conf &amp;&amp;\
+    echo &quot;&lt;/Location&gt;&quot; &gt;&gt; /etc/apache2/apache2.conf
+</code></pre>
+<h2 id="4-部署-statsd-用来收集自定义服务数据">4. 部署 statsd 用来收集自定义服务数据<a hidden class="anchor" aria-hidden="true" href="#4-部署-statsd-用来收集自定义服务数据">#</a></h2>
+<p>实际上 statsd 已经在部署 graphite 的时候一起部署过了，这里做的实际上是配置服务来提交数据。</p>
+<p>由于我的服务是 php 写的，所以我是直接选用的 <a href="https://github.com/domnikl/statsd-php">domnikl/statsd-php</a> 框架来进行整合。</p>
+<h2 id="5-搭建-dashboard">5. 搭建 Dashboard<a hidden class="anchor" aria-hidden="true" href="#5-搭建-dashboard">#</a></h2>
+<p>终于到最后一步辣。打开之前部署的 Grafana 控制台然后根据自己的需求添加数据源和图表，打造炫酷的 Dashboard（尽管用户看不到）。</p>
+<p>别忘了修改 Grafana 的密码哦。</p>
+<p>最终成品图：</p>
+<p><img loading="lazy" src="https://i.loli.net/2018/07/02/5b3a2e0c1bdb9.jpg" alt="Dashboard"  />
+</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/docker/">Docker</a></li>
+      <li><a href="http://localhost:1313/tags/grafana/">Grafana</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/ab-problem/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>不用&#43;实现A&#43;B Problem</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/windows-recycle/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Windows 回收站的原理</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

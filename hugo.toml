@@ -1,0 +1,104 @@
+baseURL = 'https://blog.harrynull.tech/'
+languageCode = 'en-us'
+title = "Harry Yu's Blog"
+paginate = 8
+theme = ["PaperMod"]
+enableInlineShortcodes = true
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+enableEmoji = true
+pygmentsUseClasses = true
+mainsections = ["posts"]
+googleAnalytics = "G-TLXRWJWNHN"
+
+[minify]
+disableXML = true
+
+[languages.en]
+languageName = "English"
+weight = 1
+
+[languages.en.taxonomies]
+category = "categories"
+tag = "tags"
+series = "series"
+
+[[languages.en.menu.main]]
+name = "Tags"
+url = "tags/"
+weight = 10
+
+[[languages.en.menu.main]]
+name = "Search"
+url = "search"
+
+[[languages.en.menu.main]]
+name = "Projects"
+url = "projects"
+
+[languages.cn]
+languageName = "中文"
+weight = 2
+
+[languages.cn.taxonomies]
+category = "类别"
+tag = "Tags"
+series = "系列"
+
+[[languages.cn.menu.main]]
+name = "Tags"
+url = "tags/"
+weight = 10
+
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+
+[params]
+env = "production"
+description = "Harry's Blog"
+author = "Harry Yu"
+defaultTheme = "auto"
+ShowShareButtons = false
+ShowReadingTime = true
+displayFullLangName = true
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowRssButtonInSectionTermList = true
+ShowAllPagesInArchive = true
+ShowPageNums = true
+ShowToc = true
+images = []
+
+[params.profileMode]
+enabled = false
+title = "Harry"
+imageUrl = "#"
+imageTitle = "my image"
+
+[params.homeInfoParams]
+Title = "Harry Yu"
+Content = """
+👋 Welcome to my blog. I write about random stuff here."""
+
+[[params.socialIcons]]
+name = "github"
+title = "Github"
+url = "https://github.com/harrynull"
+
+[params.assets]
+disableHLJS = true
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.highlight]
+noClasses = false
+
+[services.instagram]
+disableInlineCSS = true
+
+[services.twitter]
+disableInlineCSS = true

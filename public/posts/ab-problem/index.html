@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>不用&#43;实现A&#43;B Problem | Harry Yu&#39;s Blog</title>
+<meta name="keywords" content="C&#43;&#43;, CS">
+<meta name="description" content="
+Calculate the sum of two integers a and b, but you are not allowed to use the operator &#43; and -.
+
+这是来自 leetcode 的一道经典题目——不使用&#43;实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。">
+<meta name="author" content="Harry Yu">
+<link rel="canonical" href="http://localhost:1313/posts/ab-problem/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/ab-problem/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TLXRWJWNHN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-TLXRWJWNHN', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="不用&#43;实现A&#43;B Problem" />
+<meta property="og:description" content="
+Calculate the sum of two integers a and b, but you are not allowed to use the operator &#43; and -.
+
+这是来自 leetcode 的一道经典题目——不使用&#43;实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/ab-problem/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-26T19:14:40+00:00" />
+<meta property="article:modified_time" content="2018-07-26T19:14:40+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="不用&#43;实现A&#43;B Problem"/>
+<meta name="twitter:description" content="
+Calculate the sum of two integers a and b, but you are not allowed to use the operator &#43; and -.
+
+这是来自 leetcode 的一道经典题目——不使用&#43;实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "不用+实现A+B Problem",
+      "item": "http://localhost:1313/posts/ab-problem/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "不用+实现A+B Problem",
+  "name": "不用\u002b实现A\u002bB Problem",
+  "description": " Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.\n这是来自 leetcode 的一道经典题目——不使用+实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。\n",
+  "keywords": [
+    "C++", "CS"
+  ],
+  "articleBody": " Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.\n这是来自 leetcode 的一道经典题目——不使用+实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。\n以上是有无符号整数的公式化表示，截图自CMU 15-213讲座视频，其中w表示该数在内存中占的bit数。\n首先先了解有无符号整数的表示方法和他们的最大最小值。\n无符号整数 先从最简单的无符号整数开始，以下是一个无符号整数(8bit)的二进制表示的例子。\n# 8 7 6 5 4 3 2 1 值 128 64 32 16 8 4 2 1 二进制 0 1 1 0 0 1 0 0 x= 0 64 32 0 0 4 0 0 Sum 100 以上是无符号整数二进制01100100的十进制值求法。从其最小位开始，设第一位值1，第二位值2……第n位值2^n。然后做一个简单的求和即可算出来其十进制值。 用 Windows 10 自带的计算器验证结果（BIN 0110 0100 == DEC 100）。\n我们可以由上表推算出8位二进制可以表示的最大无符号数为0b1111 1111，即2^0+2^1+2^2+…+2^7=255；最小值当然就是0b0000 0000，即十进制0。\n有符号整数（补码） 在“补码”表示的有符号整数中，人们规定把二进制的MSB(most significant bit)，即最后一位规定为符号位，具体表现是这样的：\n# 8 7 6 5 4 3 2 1 值 -128 64 32 16 8 4 2 1 二进制 0 1 1 0 0 1 0 0 x= 0 64 32 0 0 4 0 0 Sum 100 注意最后一位的“价值”从128变成了-128，而其它各位的“价值”保持不变，这样就在一定程度上保持了有无符号数内存表示的兼容。\n由此表可得，有符号数字的最大值是0b0111 1111（除了-128的一位其它位都选上），即127，如下表所示：\n#|8|7|6|5|4|3|2|1 :—–:|:—–:|:—–:|:—–:|:—–:|:—–:|:—–:|:—–:| 值|-128|64|32|16|8|4|2|1 二进制|0|1|1|1|1|1|1|1 x=|0|64|32|16|8|4|2|1 Sum|127\n而有符号整数的最小值则为0b1000 0000（只选择-128这个负数“价值”的位），即-128：\n# 8 7 6 5 4 3 2 1 值 -128 64 32 16 8 4 2 1 二进制 1 0 0 0 0 0 0 0 x= -128 0 0 0 0 0 0 0 Sum -128 ∴8bit有符号整数的范围为-128~127\n加法 二进制的加法其实就和十进制加法一样，列个竖式算个进位就出来了。比如说0b0010 0001 + 0b0001 0111:\n0b 0010 0001 (33) + 0b 0001 0111 (23) = 0b 0011 1000 (56) 有趣的是，相同的规则也能运用到有符号整数中，例如：\n0b 1010 0001 (-95) + 0b 0001 0111 (23) = 0b 1011 1000 (-72) （所以说其实根本不需要知道补码是什么的吗(╯‵□′)╯︵┻━）） 那么我们只要写程序模拟这个竖式加法过程就可以了。 在此之前先介绍一下异或运算符(^)，其运算过程如下：\nA B A^B 0 0 0 0 1 1 1 0 1 1 1 0 可以看到异或运算和加法运算很像，我们可以利用该运算符来模拟加法，然后只要手动处理进位就可以了。\n#include int add(int a, int b) { // a+b int sum = 0; constexpr size_t intLength = sizeof(int) * 8; bool lcarry = false; for (size_t i = 0; i \u003c intLength; ++i) { bool carry = false; // 这一位是否会产生进位 int mask = 1 \u003c\u003c i; // 指定我们正在处理的位数 bool val = (a\u0026mask) ^ (b\u0026mask); // 这一位的运算结果 if ((a\u0026mask) \u0026\u0026 (b\u0026mask)) carry = true; // 如果两个加数这一位都是1的话就会产生进位 if (lcarry) { // 上一位有进位吗? if (val) carry = true; // 如果上一位有进位，这一位是1的话，那这一位也会产生进位 val ^= 1; // 不然的话就加一 } lcarry = carry; if (val) sum |= mask; // 设置这一位的运算结果 } return sum; } int main(){ int a, b; std::cin \u003e\u003e a \u003e\u003e b; std::cout \u003c\u003c add(a, b) \u003c\u003c std::endl; } 这样我们就花了16行实现了a+b。 然而，可能你也发现了，这样实现其实在for循环里还是有一个++运算的orz 不过幸好这个加号很容易就可以去掉——我们只需要手动展开循环就可以了（逃\n好吧其实还有更优雅的方式，我们可以一次性把所有位数全部运算一遍！优化过的代码如下：\n#include int add(int a, int b) { int carry=(a\u0026b)\u003c\u003c1; int sum=a^b; while (carry!=0){ // 一直加到没有进位为止 int newSum=sum^carry; // 加进位 carry=(sum\u0026carry)\u003c\u003c1; // 获取加进位的时候可能产生的进位 sum=newSum; } return sum; } int main(){ int a, b; std::cin \u003e\u003e a \u003e\u003e b; std::cout \u003c\u003c add(a, b) \u003c\u003c std::endl; } ",
+  "wordCount" : "390",
+  "inLanguage": "en",
+  "datePublished": "2018-07-26T19:14:40Z",
+  "dateModified": "2018-07-26T19:14:40Z",
+  "author":{
+    "@type": "Person",
+    "name": "Harry Yu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/ab-problem/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harry Yu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu&#39;s Blog (Alt + H)">Harry Yu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/cn/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      不用&#43;实现A&#43;B Problem
+    </h1>
+    <div class="post-meta"><span title='2018-07-26 19:14:40 +0000 UTC'>July 26, 2018</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Harry Yu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%97%a0%e7%ac%a6%e5%8f%b7%e6%95%b4%e6%95%b0" aria-label="无符号整数">无符号整数</a></li>
+                <li>
+                    <a href="#%e6%9c%89%e7%ac%a6%e5%8f%b7%e6%95%b4%e6%95%b0%e8%a1%a5%e7%a0%81" aria-label="有符号整数（补码）">有符号整数（补码）</a></li>
+                <li>
+                    <a href="#%e5%8a%a0%e6%b3%95" aria-label="加法">加法</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p>Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.</p>
+</blockquote>
+<p>这是来自 leetcode 的一道经典题目——不使用+实现求和。本文将从整数（有符号和无符号）在内存的表现入手并讨论该题解法。</p>
+<p><img loading="lazy" src="https://i.loli.net/2018/07/26/5b59a35cb481e.png" alt="formula"  />
+
+以上是有无符号整数的公式化表示，截图自CMU 15-213讲座视频，其中w表示该数在内存中占的bit数。</p>
+<p>首先先了解有无符号整数的表示方法和他们的最大最小值。</p>
+<h2 id="无符号整数">无符号整数<a hidden class="anchor" aria-hidden="true" href="#无符号整数">#</a></h2>
+<p>先从最简单的无符号整数开始，以下是一个无符号整数(8bit)的二进制表示的例子。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>#</strong></th>
+<th style="text-align:center"><strong>8</strong></th>
+<th style="text-align:center"><strong>7</strong></th>
+<th style="text-align:center"><strong>6</strong></th>
+<th style="text-align:center"><strong>5</strong></th>
+<th style="text-align:center"><strong>4</strong></th>
+<th style="text-align:center"><strong>3</strong></th>
+<th style="text-align:center"><strong>2</strong></th>
+<th style="text-align:center"><strong>1</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">值</td>
+<td style="text-align:center">128</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">二进制</td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">x=</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">Sum</td>
+<td style="text-align:center">100</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>以上是无符号整数二进制01100100的十进制值求法。从其最小位开始，设第一位值1，第二位值2……第n位值2^n。然后做一个简单的求和即可算出来其十进制值。
+<img loading="lazy" src="https://i.loli.net/2018/07/26/5b59a1060e94e.png" alt="validation"  />
+
+用 Windows 10 自带的计算器验证结果（BIN 0110 0100 == DEC 100）。</p>
+<p>我们可以由上表推算出8位二进制可以表示的最大无符号数为<code>0b1111 1111</code>，即2^0+2^1+2^2+&hellip;+2^7=255；最小值当然就是<code>0b0000 0000</code>，即十进制0。</p>
+<h2 id="有符号整数补码">有符号整数（补码）<a hidden class="anchor" aria-hidden="true" href="#有符号整数补码">#</a></h2>
+<p>在“补码”表示的有符号整数中，人们规定把二进制的MSB(most significant bit)，即最后一位规定为符号位，具体表现是这样的：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>#</strong></th>
+<th style="text-align:center"><strong>8</strong></th>
+<th style="text-align:center"><strong>7</strong></th>
+<th style="text-align:center"><strong>6</strong></th>
+<th style="text-align:center"><strong>5</strong></th>
+<th style="text-align:center"><strong>4</strong></th>
+<th style="text-align:center"><strong>3</strong></th>
+<th style="text-align:center"><strong>2</strong></th>
+<th style="text-align:center"><strong>1</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">值</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">二进制</td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">x=</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">Sum</td>
+<td style="text-align:center"><strong>100</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>注意最后一位的“价值”从128变成了-128，而其它各位的“价值”保持不变，这样就在一定程度上保持了有无符号数内存表示的兼容。</p>
+<p>由此表可得，有符号数字的最大值是<code>0b0111 1111</code>（除了-128的一位其它位都选上），即127，如下表所示：</p>
+<p><strong>#</strong>|<strong>8</strong>|<strong>7</strong>|<strong>6</strong>|<strong>5</strong>|<strong>4</strong>|<strong>3</strong>|<strong>2</strong>|<strong>1</strong>
+:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|:&mdash;&ndash;:|
+值|-128|64|32|16|8|4|2|1
+二进制|<strong>0</strong>|<strong>1</strong>|<strong>1</strong>|<strong>1</strong>|<strong>1</strong>|<strong>1</strong>|<strong>1</strong>|<strong>1</strong>
+x=|0|64|32|16|8|4|2|1
+Sum|<strong>127</strong></p>
+<p>而有符号整数的最小值则为<code>0b1000 0000</code>（只选择-128这个负数“价值”的位），即-128：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>#</strong></th>
+<th style="text-align:center"><strong>8</strong></th>
+<th style="text-align:center"><strong>7</strong></th>
+<th style="text-align:center"><strong>6</strong></th>
+<th style="text-align:center"><strong>5</strong></th>
+<th style="text-align:center"><strong>4</strong></th>
+<th style="text-align:center"><strong>3</strong></th>
+<th style="text-align:center"><strong>2</strong></th>
+<th style="text-align:center"><strong>1</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">值</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">二进制</td>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">x=</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">Sum</td>
+<td style="text-align:center"><strong>-128</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>∴8bit有符号整数的范围为-128~127</p>
+<h2 id="加法">加法<a hidden class="anchor" aria-hidden="true" href="#加法">#</a></h2>
+<p>二进制的加法其实就和十进制加法一样，列个竖式算个进位就出来了。比如说<code>0b0010 0001 + 0b0001 0111</code>:</p>
+<pre tabindex="0"><code>  0b 0010 0001 (33)
++ 0b 0001 0111 (23)
+= 0b 0011 1000 (56)
+</code></pre><p>有趣的是，相同的规则也能运用到有符号整数中，例如：</p>
+<pre tabindex="0"><code>  0b 1010 0001 (-95)
++ 0b 0001 0111 (23)
+= 0b 1011 1000 (-72)
+</code></pre><p>（所以说其实根本不需要知道补码是什么的吗(╯‵□′)╯︵┻━））
+那么我们只要写程序模拟这个竖式加法过程就可以了。
+在此之前先介绍一下异或运算符(^)，其运算过程如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>A</strong></th>
+<th style="text-align:center"><strong>B</strong></th>
+<th style="text-align:center"><strong>A^B</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到异或运算和加法运算很像，我们可以利用该运算符来模拟加法，然后只要手动处理进位就可以了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// a+b
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">constexpr</span> <span class="n">size_t</span> <span class="n">intLength</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="n">lcarry</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">intLength</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">carry</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// 这一位是否会产生进位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// 指定我们正在处理的位数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">bool</span> <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">b</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">);</span> <span class="c1">// 这一位的运算结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">((</span><span class="n">a</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">b</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">))</span> <span class="n">carry</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// 如果两个加数这一位都是1的话就会产生进位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">lcarry</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 上一位有进位吗?
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="n">carry</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// 如果上一位有进位，这一位是1的话，那这一位也会产生进位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">val</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// 不然的话就加一
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">lcarry</span> <span class="o">=</span> <span class="n">carry</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="n">sum</span> <span class="o">|=</span> <span class="n">mask</span><span class="p">;</span> <span class="c1">// 设置这一位的运算结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这样我们就花了16行实现了a+b。
+然而，可能你也发现了，这样实现其实在for循环里还是有一个++运算的orz
+不过幸好这个加号很容易就可以去掉——我们只需要手动展开循环就可以了（逃</p>
+<p>好吧其实还有更优雅的方式，我们可以一次性把所有位数全部运算一遍！优化过的代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">carry</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">&amp;</span><span class="n">b</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sum</span><span class="o">=</span><span class="n">a</span><span class="o">^</span><span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">carry</span><span class="o">!=</span><span class="mi">0</span><span class="p">){</span> <span class="c1">// 一直加到没有进位为止
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">newSum</span><span class="o">=</span><span class="n">sum</span><span class="o">^</span><span class="n">carry</span><span class="p">;</span> <span class="c1">// 加进位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">carry</span><span class="o">=</span><span class="p">(</span><span class="n">sum</span><span class="o">&amp;</span><span class="n">carry</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// 获取加进位的时候可能产生的进位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">sum</span><span class="o">=</span><span class="n">newSum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/c&#43;&#43;/">C&#43;&#43;</a></li>
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/base64/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>用C&#43;&#43;实现base64编解码</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/server-monitor/">
+    <span class="title">Next »</span>
+    <br>
+    <span>部署基于 Grafana &#43; Graphite &#43; collectd &#43; statsd 的服务监控系统</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

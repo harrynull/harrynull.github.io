@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>[CSAPP] Lab2 Phase 4 解谜笔记 | Harry Yu | Blog</title>
+<meta name="keywords" content="CS, CSAPP, 汇编">
+<meta name="description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/__posts/csapp-lab2-phase-4/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/__posts/csapp-lab2-phase-4/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu | Blog (Alt + H)">Harry Yu | Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      [CSAPP] Lab2 Phase 4 解谜笔记
+    </h1>
+    <div class="post-meta"><span title='2017-08-25 10:30:49 +0000 UTC'>August 25, 2017</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：<a href="http://csapp.cs.cmu.edu/3e/labs.html">http://csapp.cs.cmu.edu/3e/labs.html</a>。</p>
+<p><strong>警告：本文含有剧透内容，想要玩Lab2的慎看！</strong></p>
+<p>首先先看一下phase_4的汇编</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">000000000040100</span><span style="color:#a6e22e">c</span> <span style="color:#960050;background-color:#1e0010">&lt;</span><span style="color:#66d9ef">phase_4</span><span style="color:#960050;background-color:#1e0010">&gt;</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40100</span>c:	<span style="color:#a6e22e">sub</span>    <span style="color:#66d9ef">$0x18</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401010:</span>   <span style="color:#a6e22e">lea</span>    <span style="color:#ae81ff">0xc</span>(%rsp),%rcx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401015:</span>   <span style="color:#a6e22e">lea</span>    <span style="color:#ae81ff">0x8</span>(%rsp),%rdx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40101</span>a:   <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x4025cf</span>,%esi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40101</span>f:	<span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x0</span>,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401024:</span>   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">400bf0</span> &lt;<span style="color:#66d9ef">__isoc99_sscanf@plt</span>&gt;<span style="color:#960050;background-color:#1e0010">=</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401029:</span>   <span style="color:#a6e22e">cmp</span>    <span style="color:#66d9ef">$0x2</span>,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40102</span>c:	<span style="color:#a6e22e">jne</span>    <span style="color:#ae81ff">401035</span> &lt;<span style="color:#66d9ef">phase_4</span>+<span style="color:#ae81ff">0x29</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40102</span>e:	<span style="color:#a6e22e">cmpl</span>   <span style="color:#66d9ef">$0xe</span>,<span style="color:#ae81ff">0x8</span>(%rsp)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401033:</span>   <span style="color:#a6e22e">jbe</span>    <span style="color:#ae81ff">40103a</span> &lt;<span style="color:#66d9ef">phase_4</span>+<span style="color:#ae81ff">0x2e</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401035:</span>   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">40143a</span> &lt;<span style="color:#66d9ef">explode_bomb</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40103</span>a:   <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0xe</span>,%edx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40103</span>f:	<span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x0</span>,%esi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401044:</span>   <span style="color:#a6e22e">mov</span>    <span style="color:#ae81ff">0x8</span>(%rsp),%edi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401048:</span>   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">400fce</span> &lt;<span style="color:#66d9ef">func4</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40104</span>d:   <span style="color:#a6e22e">test</span>   %eax,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40104</span>f:   <span style="color:#a6e22e">jne</span>    <span style="color:#ae81ff">401058</span> &lt;<span style="color:#66d9ef">phase_4</span>+<span style="color:#ae81ff">0x4c</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401051:</span>   <span style="color:#a6e22e">cmpl</span>   <span style="color:#66d9ef">$0x0</span>,<span style="color:#ae81ff">0xc</span>(%rsp)
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401056:</span>	<span style="color:#a6e22e">je</span>     <span style="color:#ae81ff">40105d</span> &lt;<span style="color:#66d9ef">phase_4</span>+<span style="color:#ae81ff">0x51</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401058:</span>	<span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">40143a</span> &lt;<span style="color:#66d9ef">explode_bomb</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40105</span>d:	<span style="color:#a6e22e">add</span>    <span style="color:#66d9ef">$0x18</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401061:</span>	<span style="color:#a6e22e">retq</span>   
+</span></span></code></pre></div><p>通过汇编分析可知，第7行处调用了<code>sscanf(rdi, *0x4025cf, rsp+0x8, rsp+0xc)</code>，其中*0x4025cf即&quot;%d %d&quot;，将两个数读入到了栈上（后用N1,N2代指这两个数）。
+接着在第11行处可以分析出N1&lt;=0xe。
+16行又是一个函数调用（参数个数未知，估计是3个），<code>func4(rdi,0,0xE)</code>.
+通过后面的代码可以推测出func4的返回值为0且N2为0。所以现在的目标就是找到N1使func4(N1,0,0xE)==0。</p>
+<p>然后来看看func4吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0000000000400</span><span style="color:#a6e22e">fce</span> <span style="color:#960050;background-color:#1e0010">&lt;</span><span style="color:#66d9ef">func4</span><span style="color:#960050;background-color:#1e0010">&gt;</span>: <span style="color:#75715e">;edi=N1, esi=0, edx=0xE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fce:	<span style="color:#a6e22e">sub</span>    <span style="color:#66d9ef">$0x8</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>fd2:   <span style="color:#a6e22e">mov</span>    %edx,%eax <span style="color:#75715e">;eax=arg3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fd4:   <span style="color:#a6e22e">sub</span>    %esi,%eax <span style="color:#75715e">;eax-=arg2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fd6:   <span style="color:#a6e22e">mov</span>    %eax,%ecx  <span style="color:#75715e">;ecx=eax=arg3-arg2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fd8:   <span style="color:#a6e22e">shr</span>    <span style="color:#66d9ef">$0x1f</span>,%ecx <span style="color:#75715e">;ecx&gt;&gt;=0x1f (logic)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fdb:	<span style="color:#a6e22e">add</span>    %ecx,%eax <span style="color:#75715e">;eax+=ecx
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fdd:	<span style="color:#a6e22e">sar</span>    %eax     <span style="color:#75715e">;eax/=2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fdf:	<span style="color:#a6e22e">lea</span>    (%rax,%rsi,<span style="color:#ae81ff">1</span>),%ecx <span style="color:#75715e">;ecx=rax+rsi
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fe2:	<span style="color:#a6e22e">cmp</span>    %edi,%ecx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>fe4:	<span style="color:#a6e22e">jle</span>    <span style="color:#ae81ff">400ff2</span> &lt;<span style="color:#66d9ef">func4</span>+<span style="color:#ae81ff">0x24</span>&gt; <span style="color:#75715e">;ecx&lt;=edi -&gt; 400ff2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fe6:	<span style="color:#a6e22e">lea</span>    -<span style="color:#ae81ff">0x1</span>(%rcx),%edx  <span style="color:#75715e">;edx=rcx-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">400</span>fe9:	<span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">400fce</span> &lt;<span style="color:#66d9ef">func4</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>fee:	<span style="color:#a6e22e">add</span>    %eax,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ff0:	<span style="color:#a6e22e">jmp</span>    <span style="color:#ae81ff">401007</span> &lt;<span style="color:#66d9ef">func4</span>+<span style="color:#ae81ff">0x39</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ff2:	<span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">$0x0</span>,%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ff7:   <span style="color:#a6e22e">cmp</span>    %edi,%ecx
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ff9:   <span style="color:#a6e22e">jge</span>    <span style="color:#ae81ff">401007</span> &lt;<span style="color:#66d9ef">func4</span>+<span style="color:#ae81ff">0x39</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ffb:   <span style="color:#a6e22e">lea</span>    <span style="color:#ae81ff">0x1</span>(%rcx),%esi
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">400</span>ffe:   <span style="color:#a6e22e">callq</span>  <span style="color:#ae81ff">400fce</span> &lt;<span style="color:#66d9ef">func4</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401003:</span>   <span style="color:#a6e22e">lea</span>    <span style="color:#ae81ff">0x1</span>(%rax,%rax,<span style="color:#ae81ff">1</span>),%eax
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">401007:</span>   <span style="color:#a6e22e">add</span>    <span style="color:#66d9ef">$0x8</span>,%rsp
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">40100</span>b:	<span style="color:#a6e22e">retq</span>   
+</span></span></code></pre></div><p>然后将其手动翻译成等价的伪C代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">func4</span>(edi<span style="color:#f92672">=</span>N1, esi<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, edx<span style="color:#f92672">=</span><span style="color:#ae81ff">0xE</span>){
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">=</span>edx;
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">-=</span>esi;
+</span></span><span style="display:flex;"><span>    ecx<span style="color:#f92672">=</span>eax<span style="color:#f92672">=</span>edx<span style="color:#f92672">-</span>esi;
+</span></span><span style="display:flex;"><span>    ecx<span style="color:#f92672">&gt;&gt;=</span><span style="color:#ae81ff">0x1f</span> (logic);
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">+=</span>ecx;
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">/=</span><span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>    ecx<span style="color:#f92672">=</span>rax<span style="color:#f92672">+</span>rsi;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(ecx<span style="color:#f92672">&lt;=</span>edi) <span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">400ff</span><span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>    edx<span style="color:#f92672">=</span>rcx<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">func4</span>(edi,esi,edx);
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">*=</span><span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">401007</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">400ff</span><span style="color:#ae81ff">2</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(ecx<span style="color:#f92672">&gt;=</span>edi) <span style="color:#66d9ef">goto</span> <span style="color:#ae81ff">401007</span>;
+</span></span><span style="display:flex;"><span>    esi<span style="color:#f92672">=</span>rcx<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">func4</span>(edi,esi,edx);
+</span></span><span style="display:flex;"><span>    eax<span style="color:#f92672">=</span>rax<span style="color:#f92672">+</span>rax<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">401007</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> eax;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">func4</span>(N1,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0xE</span>);
+</span></span></code></pre></div><p>然后再稍微整(魔)理(改)下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">func4</span>(edi<span style="color:#f92672">=</span>N1, esi<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, edx<span style="color:#f92672">=</span><span style="color:#ae81ff">0xE</span>){
+</span></span><span style="display:flex;"><span>    ret<span style="color:#f92672">=</span>(edx<span style="color:#f92672">-</span>esi<span style="color:#f92672">+</span><span style="color:#a6e22e">sign</span>(edx<span style="color:#f92672">-</span>esi))<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>; <span style="color:#75715e">//sign(ecx)是ecx的符号位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ecx<span style="color:#f92672">=</span>ret<span style="color:#f92672">+</span>esi;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(ecx<span style="color:#f92672">&gt;</span>edi){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">func4</span>(N1,esi,ecx<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(ecx<span style="color:#f92672">&lt;</span>edi){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">func4</span>(N1,ecx<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,edx)<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">func4</span>(N1,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0xE</span>);
+</span></span></code></pre></div><p>这里发现中间的代码是两个if，然后前面的移位其实是在取符号位。
+可以看出这一段代码其实是类似于二分查找的东西，那么想让返回值为0的话，需要ecx&gt;=edi。edi直接取0试了一下，竟然过了。
+所以N1=0,N2=0。
+phase4的答案为&quot;0 0&quot;。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+      <li><a href="http://localhost:1313/tags/csapp/">CSAPP</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B1%87%E7%BC%96/">汇编</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu | Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

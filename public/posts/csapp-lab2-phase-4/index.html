@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[CSAPP] Lab2 Phase 4 解谜笔记 | Harry Yu&#39;s Blog</title>
+<meta name="keywords" content="CS, CSAPP, 汇编">
+<meta name="description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！">
+<meta name="author" content="Harry Yu">
+<link rel="canonical" href="http://localhost:1313/posts/csapp-lab2-phase-4/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4599eadb9eb2ad3d0a8d6827b41a8fda8f2f4af226b63466c09c5fddbc8706b7.css" integrity="sha256-RZnq256yrT0KjWgntBqP2o8vSvImtjRmwJxf3byHBrc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/csapp-lab2-phase-4/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TLXRWJWNHN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-TLXRWJWNHN', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="[CSAPP] Lab2 Phase 4 解谜笔记" />
+<meta property="og:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/csapp-lab2-phase-4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-08-25T10:30:49+00:00" />
+<meta property="article:modified_time" content="2017-08-25T10:30:49+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[CSAPP] Lab2 Phase 4 解谜笔记"/>
+<meta name="twitter:description" content="介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。
+警告：本文含有剧透内容，想要玩Lab2的慎看！"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[CSAPP] Lab2 Phase 4 解谜笔记",
+      "item": "http://localhost:1313/posts/csapp-lab2-phase-4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[CSAPP] Lab2 Phase 4 解谜笔记",
+  "name": "[CSAPP] Lab2 Phase 4 解谜笔记",
+  "description": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n",
+  "keywords": [
+    "CS", "CSAPP", "汇编"
+  ],
+  "articleBody": "介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。 该Lab的下载地址：http://csapp.cs.cmu.edu/3e/labs.html。\n警告：本文含有剧透内容，想要玩Lab2的慎看！\n首先先看一下phase_4的汇编\n000000000040100c \u003cphase_4\u003e: 40100c:\tsub $0x18,%rsp 401010: lea 0xc(%rsp),%rcx 401015: lea 0x8(%rsp),%rdx 40101a: mov $0x4025cf,%esi 40101f:\tmov $0x0,%eax 401024: callq 400bf0 \u003c__isoc99_sscanf@plt\u003e= 401029: cmp $0x2,%eax 40102c:\tjne 401035 \u003cphase_4+0x29\u003e 40102e:\tcmpl $0xe,0x8(%rsp) 401033: jbe 40103a \u003cphase_4+0x2e\u003e 401035: callq 40143a \u003cexplode_bomb\u003e 40103a: mov $0xe,%edx 40103f:\tmov $0x0,%esi 401044: mov 0x8(%rsp),%edi 401048: callq 400fce \u003cfunc4\u003e 40104d: test %eax,%eax 40104f: jne 401058 \u003cphase_4+0x4c\u003e 401051: cmpl $0x0,0xc(%rsp) 401056:\tje 40105d \u003cphase_4+0x51\u003e 401058:\tcallq 40143a \u003cexplode_bomb\u003e 40105d:\tadd $0x18,%rsp 401061:\tretq 通过汇编分析可知，第7行处调用了sscanf(rdi, *0x4025cf, rsp+0x8, rsp+0xc)，其中*0x4025cf即\"%d %d\"，将两个数读入到了栈上（后用N1,N2代指这两个数）。 接着在第11行处可以分析出N1\u003c=0xe。 16行又是一个函数调用（参数个数未知，估计是3个），func4(rdi,0,0xE). 通过后面的代码可以推测出func4的返回值为0且N2为0。所以现在的目标就是找到N1使func4(N1,0,0xE)==0。\n然后来看看func4吧：\n0000000000400fce \u003cfunc4\u003e: ;edi=N1, esi=0, edx=0xE 400fce:\tsub $0x8,%rsp 400fd2: mov %edx,%eax ;eax=arg3 400fd4: sub %esi,%eax ;eax-=arg2 400fd6: mov %eax,%ecx ;ecx=eax=arg3-arg2 400fd8: shr $0x1f,%ecx ;ecx\u003e\u003e=0x1f (logic) 400fdb:\tadd %ecx,%eax ;eax+=ecx 400fdd:\tsar %eax ;eax/=2 400fdf:\tlea (%rax,%rsi,1),%ecx ;ecx=rax+rsi 400fe2:\tcmp %edi,%ecx 400fe4:\tjle 400ff2 \u003cfunc4+0x24\u003e ;ecx\u003c=edi -\u003e 400ff2 400fe6:\tlea -0x1(%rcx),%edx ;edx=rcx-1 400fe9:\tcallq 400fce \u003cfunc4\u003e 400fee:\tadd %eax,%eax 400ff0:\tjmp 401007 \u003cfunc4+0x39\u003e 400ff2:\tmov $0x0,%eax 400ff7: cmp %edi,%ecx 400ff9: jge 401007 \u003cfunc4+0x39\u003e 400ffb: lea 0x1(%rcx),%esi 400ffe: callq 400fce \u003cfunc4\u003e 401003: lea 0x1(%rax,%rax,1),%eax 401007: add $0x8,%rsp 40100b:\tretq 然后将其手动翻译成等价的伪C代码：\nfunc4(edi=N1, esi=0, edx=0xE){ eax=edx; eax-=esi; ecx=eax=edx-esi; ecx\u003e\u003e=0x1f (logic); eax+=ecx; eax/=2; ecx=rax+rsi; if(ecx\u003c=edi) goto 400ff2; edx=rcx-1; func4(edi,esi,edx); eax*=2; goto 401007; 400ff2: eax=0; if(ecx\u003e=edi) goto 401007; esi=rcx+1; func4(edi,esi,edx); eax=rax+rax+1; 401007: return eax; } func4(N1,0,0xE); 然后再稍微整(魔)理(改)下：\nfunc4(edi=N1, esi=0, edx=0xE){ ret=(edx-esi+sign(edx-esi))/2; //sign(ecx)是ecx的符号位 ecx=ret+esi; if(ecx\u003eedi){ return func4(N1,esi,ecx-1)*2; } if(ecx\u003cedi){ return func4(N1,ecx+1,edx)*2+1; } return 0; } func4(N1,0,0xE); 这里发现中间的代码是两个if，然后前面的移位其实是在取符号位。 可以看出这一段代码其实是类似于二分查找的东西，那么想让返回值为0的话，需要ecx\u003e=edi。edi直接取0试了一下，竟然过了。 所以N1=0,N2=0。 phase4的答案为\"0 0\"。\n",
+  "wordCount" : "232",
+  "inLanguage": "en",
+  "datePublished": "2017-08-25T10:30:49Z",
+  "dateModified": "2017-08-25T10:30:49Z",
+  "author":{
+    "@type": "Person",
+    "name": "Harry Yu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/csapp-lab2-phase-4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harry Yu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Harry Yu&#39;s Blog (Alt + H)">Harry Yu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/cn/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [CSAPP] Lab2 Phase 4 解谜笔记
+    </h1>
+    <div class="post-meta"><span title='2017-08-25 10:30:49 +0000 UTC'>August 25, 2017</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Harry Yu
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>介绍：这是一个“拆弹”游戏，玩家要在反汇编中找到每一关的拆弹密码，一共有6个phases。
+该Lab的下载地址：<a href="http://csapp.cs.cmu.edu/3e/labs.html">http://csapp.cs.cmu.edu/3e/labs.html</a>。</p>
+<p><strong>警告：本文含有剧透内容，想要玩Lab2的慎看！</strong></p>
+<p>首先先看一下phase_4的汇编</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">000000000040100</span><span class="nf">c</span> <span class="err">&lt;</span><span class="no">phase_4</span><span class="err">&gt;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40100</span><span class="nl">c:</span>	<span class="nf">sub</span>    <span class="no">$0x18</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401010:</span>   <span class="nf">lea</span>    <span class="mi">0xc</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rcx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401015:</span>   <span class="nf">lea</span>    <span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%rdx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40101</span><span class="nl">a:</span>   <span class="nf">mov</span>    <span class="no">$0x4025cf</span><span class="p">,</span><span class="nv">%esi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40101</span><span class="nl">f:</span>	<span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401024:</span>   <span class="nf">callq</span>  <span class="mh">400bf0</span> <span class="p">&lt;</span><span class="no">__isoc99_sscanf@plt</span><span class="p">&gt;</span><span class="err">=</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401029:</span>   <span class="nf">cmp</span>    <span class="no">$0x2</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40102</span><span class="nl">c:</span>	<span class="nf">jne</span>    <span class="mh">401035</span> <span class="p">&lt;</span><span class="no">phase_4</span><span class="p">+</span><span class="mi">0x29</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40102</span><span class="nl">e:</span>	<span class="nf">cmpl</span>   <span class="no">$0xe</span><span class="p">,</span><span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401033:</span>   <span class="nf">jbe</span>    <span class="mh">40103a</span> <span class="p">&lt;</span><span class="no">phase_4</span><span class="p">+</span><span class="mi">0x2e</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401035:</span>   <span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40103</span><span class="nl">a:</span>   <span class="nf">mov</span>    <span class="no">$0xe</span><span class="p">,</span><span class="nv">%edx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40103</span><span class="nl">f:</span>	<span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%esi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401044:</span>   <span class="nf">mov</span>    <span class="mi">0x8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span><span class="nv">%edi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401048:</span>   <span class="nf">callq</span>  <span class="mh">400fce</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40104</span><span class="nl">d:</span>   <span class="nf">test</span>   <span class="nv">%eax</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40104</span><span class="nl">f:</span>   <span class="nf">jne</span>    <span class="mh">401058</span> <span class="p">&lt;</span><span class="no">phase_4</span><span class="p">+</span><span class="mi">0x4c</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401051:</span>   <span class="nf">cmpl</span>   <span class="no">$0x0</span><span class="p">,</span><span class="mi">0xc</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401056:</span>	<span class="nf">je</span>     <span class="mh">40105d</span> <span class="p">&lt;</span><span class="no">phase_4</span><span class="p">+</span><span class="mi">0x51</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401058:</span>	<span class="nf">callq</span>  <span class="mh">40143a</span> <span class="p">&lt;</span><span class="no">explode_bomb</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40105</span><span class="nl">d:</span>	<span class="nf">add</span>    <span class="no">$0x18</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401061:</span>	<span class="nf">retq</span>   
+</span></span></code></pre></div><p>通过汇编分析可知，第7行处调用了<code>sscanf(rdi, *0x4025cf, rsp+0x8, rsp+0xc)</code>，其中*0x4025cf即&quot;%d %d&quot;，将两个数读入到了栈上（后用N1,N2代指这两个数）。
+接着在第11行处可以分析出N1&lt;=0xe。
+16行又是一个函数调用（参数个数未知，估计是3个），<code>func4(rdi,0,0xE)</code>.
+通过后面的代码可以推测出func4的返回值为0且N2为0。所以现在的目标就是找到N1使func4(N1,0,0xE)==0。</p>
+<p>然后来看看func4吧：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">0000000000400</span><span class="nf">fce</span> <span class="err">&lt;</span><span class="no">func4</span><span class="err">&gt;</span><span class="p">:</span> <span class="c1">;edi=N1, esi=0, edx=0xE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fce:</span>	<span class="nf">sub</span>    <span class="no">$0x8</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fd2:</span>   <span class="nf">mov</span>    <span class="nv">%edx</span><span class="p">,</span><span class="nv">%eax</span> <span class="c1">;eax=arg3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fd4:</span>   <span class="nf">sub</span>    <span class="nv">%esi</span><span class="p">,</span><span class="nv">%eax</span> <span class="c1">;eax-=arg2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fd6:</span>   <span class="nf">mov</span>    <span class="nv">%eax</span><span class="p">,</span><span class="nv">%ecx</span>  <span class="c1">;ecx=eax=arg3-arg2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fd8:</span>   <span class="nf">shr</span>    <span class="no">$0x1f</span><span class="p">,</span><span class="nv">%ecx</span> <span class="c1">;ecx&gt;&gt;=0x1f (logic)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fdb:</span>	<span class="nf">add</span>    <span class="nv">%ecx</span><span class="p">,</span><span class="nv">%eax</span> <span class="c1">;eax+=ecx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fdd:</span>	<span class="nf">sar</span>    <span class="nv">%eax</span>     <span class="c1">;eax/=2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fdf:</span>	<span class="nf">lea</span>    <span class="p">(</span><span class="nv">%rax</span><span class="p">,</span><span class="nv">%rsi</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nv">%ecx</span> <span class="c1">;ecx=rax+rsi
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fe2:</span>	<span class="nf">cmp</span>    <span class="nv">%edi</span><span class="p">,</span><span class="nv">%ecx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fe4:</span>	<span class="nf">jle</span>    <span class="mh">400ff2</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">+</span><span class="mi">0x24</span><span class="p">&gt;</span> <span class="c1">;ecx&lt;=edi -&gt; 400ff2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fe6:</span>	<span class="nf">lea</span>    <span class="p">-</span><span class="mi">0x1</span><span class="p">(</span><span class="nv">%rcx</span><span class="p">),</span><span class="nv">%edx</span>  <span class="c1">;edx=rcx-1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="err">400</span><span class="nl">fe9:</span>	<span class="nf">callq</span>  <span class="mh">400fce</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">fee:</span>	<span class="nf">add</span>    <span class="nv">%eax</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ff0:</span>	<span class="nf">jmp</span>    <span class="mh">401007</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">+</span><span class="mi">0x39</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ff2:</span>	<span class="nf">mov</span>    <span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ff7:</span>   <span class="nf">cmp</span>    <span class="nv">%edi</span><span class="p">,</span><span class="nv">%ecx</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ff9:</span>   <span class="nf">jge</span>    <span class="mh">401007</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">+</span><span class="mi">0x39</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ffb:</span>   <span class="nf">lea</span>    <span class="mi">0x1</span><span class="p">(</span><span class="nv">%rcx</span><span class="p">),</span><span class="nv">%esi</span>
+</span></span><span class="line"><span class="cl">  <span class="err">400</span><span class="nl">ffe:</span>   <span class="nf">callq</span>  <span class="mh">400fce</span> <span class="p">&lt;</span><span class="no">func4</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401003:</span>   <span class="nf">lea</span>    <span class="mi">0x1</span><span class="p">(</span><span class="nv">%rax</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl">  <span class="err">401007:</span>   <span class="nf">add</span>    <span class="no">$0x8</span><span class="p">,</span><span class="nv">%rsp</span>
+</span></span><span class="line"><span class="cl">  <span class="err">40100</span><span class="nl">b:</span>	<span class="nf">retq</span>   
+</span></span></code></pre></div><p>然后将其手动翻译成等价的伪C代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">func4</span><span class="p">(</span><span class="n">edi</span><span class="o">=</span><span class="n">N1</span><span class="p">,</span> <span class="n">esi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">edx</span><span class="o">=</span><span class="mh">0xE</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">=</span><span class="n">edx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">-=</span><span class="n">esi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ecx</span><span class="o">=</span><span class="n">eax</span><span class="o">=</span><span class="n">edx</span><span class="o">-</span><span class="n">esi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ecx</span><span class="o">&gt;&gt;=</span><span class="mh">0x1f</span> <span class="p">(</span><span class="n">logic</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">+=</span><span class="n">ecx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">/=</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ecx</span><span class="o">=</span><span class="n">rax</span><span class="o">+</span><span class="n">rsi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">ecx</span><span class="o">&lt;=</span><span class="n">edi</span><span class="p">)</span> <span class="k">goto</span> <span class="mf">400ff</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">edx</span><span class="o">=</span><span class="n">rcx</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">func4</span><span class="p">(</span><span class="n">edi</span><span class="p">,</span><span class="n">esi</span><span class="p">,</span><span class="n">edx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">*=</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">goto</span> <span class="mi">401007</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mf">400ff</span><span class="mi">2</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">ecx</span><span class="o">&gt;=</span><span class="n">edi</span><span class="p">)</span> <span class="k">goto</span> <span class="mi">401007</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">esi</span><span class="o">=</span><span class="n">rcx</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">func4</span><span class="p">(</span><span class="n">edi</span><span class="p">,</span><span class="n">esi</span><span class="p">,</span><span class="n">edx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">eax</span><span class="o">=</span><span class="n">rax</span><span class="o">+</span><span class="n">rax</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">401007</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">eax</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">func4</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0xE</span><span class="p">);</span>
+</span></span></code></pre></div><p>然后再稍微整(魔)理(改)下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">func4</span><span class="p">(</span><span class="n">edi</span><span class="o">=</span><span class="n">N1</span><span class="p">,</span> <span class="n">esi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">edx</span><span class="o">=</span><span class="mh">0xE</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span><span class="o">=</span><span class="p">(</span><span class="n">edx</span><span class="o">-</span><span class="n">esi</span><span class="o">+</span><span class="nf">sign</span><span class="p">(</span><span class="n">edx</span><span class="o">-</span><span class="n">esi</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="c1">//sign(ecx)是ecx的符号位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ecx</span><span class="o">=</span><span class="n">ret</span><span class="o">+</span><span class="n">esi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">ecx</span><span class="o">&gt;</span><span class="n">edi</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">func4</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span><span class="n">esi</span><span class="p">,</span><span class="n">ecx</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">ecx</span><span class="o">&lt;</span><span class="n">edi</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">func4</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span><span class="n">ecx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">edx</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">func4</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0xE</span><span class="p">);</span>
+</span></span></code></pre></div><p>这里发现中间的代码是两个if，然后前面的移位其实是在取符号位。
+可以看出这一段代码其实是类似于二分查找的东西，那么想让返回值为0的话，需要ecx&gt;=edi。edi直接取0试了一下，竟然过了。
+所以N1=0,N2=0。
+phase4的答案为&quot;0 0&quot;。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cs/">CS</a></li>
+      <li><a href="http://localhost:1313/tags/csapp/">CSAPP</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B1%87%E7%BC%96/">汇编</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/csapp-lab2-phase-5/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>[CSAPP] Lab2 Phase 5 解谜笔记</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/csapp-lab2-phase-3/">
+    <span class="title">Next »</span>
+    <br>
+    <span>[CSAPP] Lab2 Phase 3 解谜笔记</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Harry Yu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
